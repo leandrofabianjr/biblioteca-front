@@ -1,32 +1,21 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AngularFireModule } from '@angular/fire';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
-import { AngularFirestoreModule, FirestoreSettingsToken } from '@angular/fire/firestore';
-import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
-import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
+import { AngularFireAuthGuardModule } from '@angular/fire/compat/auth-guard';
 import { AuthorsComponent } from './authors/authors.component';
 import { GenresComponent } from './genres/genres.component';
 import { LocationsComponent } from './locations/locations.component';
 import { PublishersComponent } from './publishers/publishers.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemsComponent } from './items/items.component';
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatCardModule, MatChipsModule, MatDialogModule, MatFormFieldModule,
-  MatIconModule, MatInputModule,
-  MatListModule, MatPaginatorIntl, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule,
-  MatSidenavModule, MatSnackBarModule, MatSortModule,
-  MatTableModule,
-  MatToolbarModule, MatTooltipModule
-} from '@angular/material';
 import { MatPaginatorIntlPtbr } from './mat-paginator-intl-ptbr';
 import { ItemsNewComponent } from './items/items-new/items-new.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -39,12 +28,35 @@ import { LocationsNewComponent } from './locations/locations-new/locations-new.c
 import { PublishersNewComponent } from './publishers/publishers-new/publishers-new.component';
 import { DialogConfirmationComponent } from './dialog-confirmation/dialog-confirmation.component';
 import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.component';
-import { LoggedComponent } from './logged/logged.component';
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 import { A11yModule } from '@angular/cdk/a11y';
 // import { AdsenseModule } from 'ng2-adsense';
 import { BookOnlineSearchComponent } from './book-online-search/book-online-search.component';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { LoggedComponent } from './logged/logged.component';
+
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import {
+  MatPaginatorIntl,
+  MatPaginatorModule,
+} from '@angular/material/paginator';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { AngularFireModule } from '@angular/fire/compat';
 
 @NgModule({
   declarations: [
@@ -68,7 +80,7 @@ import {HttpClientModule} from '@angular/common/http';
     TabColumnSearchComponent,
     LoggedComponent,
     DialogInfoComponent,
-    BookOnlineSearchComponent
+    BookOnlineSearchComponent,
   ],
   imports: [
     BrowserModule,
@@ -88,22 +100,22 @@ import {HttpClientModule} from '@angular/common/http';
     MatPaginatorModule,
     MatChipsModule,
     MatProgressSpinnerModule,
-    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    NgSelectModule,
     MatDialogModule,
     MatSelectModule,
     MatSortModule,
-    A11yModule,
     MatSnackBarModule,
+    MatAutocompleteModule,
+    MatTooltipModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    A11yModule,
     HttpClientModule,
     // AdsenseModule.forRoot({
     //   adClient: 'ca-pub-3580088567894548',
     //   adSlot: 7259870550,
     // }),
-    MatAutocompleteModule,
-    MatTooltipModule,
     FormsModule,
   ],
   providers: [
@@ -111,13 +123,6 @@ import {HttpClientModule} from '@angular/common/http';
       provide: MatPaginatorIntl,
       useClass: MatPaginatorIntlPtbr,
     },
-    {
-      provide: FirestoreSettingsToken,
-      useValue: environment.production ? undefined : {
-        host: 'localhost:8080',
-        ssl: false
-      }
-    }
   ],
   bootstrap: [AppComponent],
   entryComponents: [
@@ -127,7 +132,7 @@ import {HttpClientModule} from '@angular/common/http';
     LocationsNewComponent,
     DialogConfirmationComponent,
     DialogInfoComponent,
-    BookOnlineSearchComponent
-  ]
+    BookOnlineSearchComponent,
+  ],
 })
-export class AppModule { }
+export class AppModule {}

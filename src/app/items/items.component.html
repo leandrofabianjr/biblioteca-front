@@ -8,7 +8,7 @@
       <th mat-header-cell *matHeaderCellDef>
         <app-tab-column-search
           header-label="Descrição"
-          sort="true"
+          [sort]="true"
           (search)="search('description', $event)"
         ></app-tab-column-search>
       </th>
@@ -55,7 +55,7 @@
       <th mat-header-cell *matHeaderCellDef>
         <app-tab-column-search
           header-label="Ano"
-          sort="true"
+          [sort]="true"
           (search)="search('year', $event)"
         ></app-tab-column-search>
       </th>
@@ -84,7 +84,7 @@
       <th mat-header-cell *matHeaderCellDef>
         <app-tab-column-search
           header-label="Local"
-          sort="true"
+          [sort]="true"
           (search)="search('location', $event)"
           [text]="searchTerms[displayedColumns.indexOf('location')]"
         ></app-tab-column-search>

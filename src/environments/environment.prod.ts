@@ -8,6 +8,6 @@ export const environment = {
     storageBucket: 'biblioteca-lfj.appspot.com',
     messagingSenderId: '504422520921',
     appId: '1:504422520921:web:baa93b120865ea253c3948',
-    measurementId: 'G-TCGY9T6XSM'
-  }
+    measurementId: 'G-TCGY9T6XSM',
+  },
 };

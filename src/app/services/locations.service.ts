@@ -1,25 +1,26 @@
-import {Injectable} from '@angular/core';
-import {BaseDtoService, CollectionType, IDto} from './base-dto.service';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {Location} from '../models/location';
+import { Injectable } from '@angular/core';
+import { BaseDtoService, CollectionType, IDto } from './base-dto.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Location } from '../models/location';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 export interface ILocationDTO extends IDto {
-  description: string;
+  description?: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LocationsService extends BaseDtoService<Location, ILocationDTO> {
-  constructor(afs: AngularFirestore) {
-    super(afs, CollectionType.Locations);
+  constructor(afs: AngularFirestore, afAuth: AngularFireAuth) {
+    super(afs, CollectionType.Locations, afAuth);
   }
 
   protected toDto(obj: Location): ILocationDTO {
-     return {
+    return {
       id: obj.id,
       uid: obj.uid,
-      description: obj.description
+      description: obj.description,
     };
   }
 

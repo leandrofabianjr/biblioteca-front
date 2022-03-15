@@ -1,5 +1,5 @@
 // This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
+// `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
@@ -12,8 +12,8 @@ export const environment = {
     storageBucket: 'biblioteca-lfj.appspot.com',
     messagingSenderId: '504422520921',
     appId: '1:504422520921:web:baa93b120865ea253c3948',
-    measurementId: 'G-TCGY9T6XSM'
-  }
+    measurementId: 'G-TCGY9T6XSM',
+  },
 };
 
 /*
@@ -23,4 +23,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

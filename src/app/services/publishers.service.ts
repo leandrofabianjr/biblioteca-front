@@ -1,25 +1,29 @@
-import {Injectable} from '@angular/core';
-import {AngularFirestore, FieldPath} from '@angular/fire/firestore';
-import {BaseDtoService, CollectionType, IDto} from './base-dto.service';
-import {Publisher} from '../models/publisher';
+import { Injectable } from '@angular/core';
+import { AngularFirestore, FieldPath } from '@angular/fire/compat/firestore';
+import { BaseDtoService, CollectionType, IDto } from './base-dto.service';
+import { Publisher } from '../models/publisher';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 export interface IPublisherDTO extends IDto {
-  name: string;
+  name?: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class PublishersService extends BaseDtoService<Publisher, IPublisherDTO> {
-  constructor(afs: AngularFirestore) {
-    super(afs, CollectionType.Publishers);
+export class PublishersService extends BaseDtoService<
+  Publisher,
+  IPublisherDTO
+> {
+  constructor(afs: AngularFirestore, afAuth: AngularFireAuth) {
+    super(afs, CollectionType.Publishers, afAuth);
   }
 
   protected toDto(obj: Publisher): IPublisherDTO {
     return {
       id: obj.id,
       uid: obj.uid,
-      name: obj.name
+      name: obj.name,
     };
   }
 

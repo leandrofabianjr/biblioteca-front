@@ -1,9 +1,0 @@
-version: '3'
-services:
-  biblioteca-ngfb:
-    build: .
-    ports:
-      - 4200:4200
-    container_name: biblioteca-ngfb
-    volumes:
-       - ../:/usr/src/app

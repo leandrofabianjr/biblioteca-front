@@ -1,4 +1,4 @@
 export interface IModel {
-  id: string;
-  uid: string;
+  id?: string;
+  uid?: string;
 }

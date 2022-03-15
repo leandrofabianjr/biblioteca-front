@@ -1,31 +1,46 @@
-import {AngularFirestore} from '@angular/fire/firestore';
-import {BehaviorSubject, from, Observable} from 'rxjs';
-import {CollectionType} from './base-dto.service';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { BehaviorSubject, mergeMap, Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+import { CollectionType } from './base-dto.service';
 
 export interface CollectionStats {
   count: number;
 }
 
 export class StatsService {
-  private uid: string;
-  private statsSjt: BehaviorSubject<CollectionStats> = new BehaviorSubject<CollectionStats>(null);
-  private path = (collectionName: string) => `/users/${this.uid}/stats/${collectionName}`;
+  private statsSjt?: BehaviorSubject<CollectionStats>;
+  private path = (collectionName: string, uid: string) =>
+    `/users/${uid}/stats/${collectionName}`;
 
-  constructor(private afs: AngularFirestore, collectionType: CollectionType) {
+  constructor(
+    private afs: AngularFirestore,
+    collectionType: CollectionType,
+    private afAuth: AngularFireAuth
+  ) {
     // @ts-ignore
-    this.uid = afs.firestore._credentials.currentUser.uid;
-    if (!this.uid) { throw Error('Usuário não encontrado'); }
-
-    this.afs.doc(this.path(collectionType)).valueChanges()
-      .subscribe((stats: CollectionStats) => this.statsSjt.next(stats));
+    // this.uid = afs.firestore._credentials.currentUser.uid;
+    this.afAuth.user.subscribe((u) =>
+      this.afs
+        .doc(this.path(collectionType, u?.uid ?? ''))
+        .valueChanges()
+        .subscribe((stats) => this.statsSjt?.next(stats as CollectionStats))
+    );
   }
 
-  get(): Observable<CollectionStats> {
-    return this.statsSjt.asObservable();
+  get(): Observable<CollectionStats | null> {
+    return this.statsSjt?.asObservable() ?? new BehaviorSubject(null);
   }
 
   set(collectionName: string, stats: CollectionStats): Observable<boolean> {
-    return from(this.afs.doc(this.path(collectionName)).update(stats)
-      .then(() => true));
+    return this.afAuth.user.pipe(
+      mergeMap((u) =>
+        this.afs
+          .doc(this.path(collectionName, u?.uid ?? ''))
+          .update(stats)
+          .then(() => true)
+      )
+    );
   }
 }

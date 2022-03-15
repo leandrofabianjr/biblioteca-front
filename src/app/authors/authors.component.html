@@ -6,7 +6,7 @@
   <table mat-table matSort [dataSource]="authorsSource">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>
-        <app-tab-column-search header-label="Nome" sort="true" (search)="search('name', $event)"></app-tab-column-search>
+        <app-tab-column-search header-label="Nome" [sort]="true" (search)="search('name', $event)"></app-tab-column-search>
       </th>
       <td mat-cell *matCellDef="let author"> {{author.name}} </td>
     </ng-container>

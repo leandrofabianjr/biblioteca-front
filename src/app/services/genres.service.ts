@@ -1,25 +1,26 @@
-import {Injectable} from '@angular/core';
-import {BaseDtoService, CollectionType, IDto} from './base-dto.service';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {Genre} from '../models/genre';
+import { Injectable } from '@angular/core';
+import { BaseDtoService, CollectionType, IDto } from './base-dto.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Genre } from '../models/genre';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 export interface IGenreDTO extends IDto {
-  description: string;
+  description?: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GenresService extends BaseDtoService<Genre, IGenreDTO> {
-  constructor(afs: AngularFirestore) {
-    super(afs, CollectionType.Genres);
+  constructor(afs: AngularFirestore, afAuth: AngularFireAuth) {
+    super(afs, CollectionType.Genres, afAuth);
   }
 
   protected toDto(obj: Genre): IGenreDTO {
     return {
       id: obj.id,
       uid: obj.uid,
-      description: obj.description
+      description: obj.description,
     };
   }
 

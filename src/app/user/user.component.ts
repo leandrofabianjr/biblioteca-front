@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthService} from '../services/auth.service';
-import {CollectionStats, StatsService} from '../services/stats.service';
-import {CollectionType} from '../services/base-dto.service';
-import {AngularFirestore} from '@angular/fire/firestore';
+import { CollectionStats, StatsService } from '../services/stats.service';
+import { CollectionType } from '../services/base-dto.service';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AuthService } from '../services/auth.service';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
-
   stats = {
     items: {} as CollectionStats,
     authors: {} as CollectionStats,
@@ -19,13 +19,27 @@ export class UserComponent implements OnInit {
     publishers: {} as CollectionStats,
   };
 
-  constructor(public afs: AngularFirestore, public auth: AuthService) {
-    new StatsService(afs, CollectionType.Items).get().subscribe(s => this.stats.items = s);
-    new StatsService(afs, CollectionType.Authors).get().subscribe(s => this.stats.authors = s);
-    new StatsService(afs, CollectionType.Genres).get().subscribe(s => this.stats.genres = s);
-    new StatsService(afs, CollectionType.Locations).get().subscribe(s => this.stats.locations = s);
-    new StatsService(afs, CollectionType.Publishers).get().subscribe(s => this.stats.publishers = s);
+  constructor(
+    public afs: AngularFirestore,
+    public auth: AuthService,
+    afAuth: AngularFireAuth
+  ) {
+    new StatsService(afs, CollectionType.Items, afAuth)
+      .get()
+      .subscribe((s) => (this.stats.items = s ?? ({} as CollectionStats)));
+    new StatsService(afs, CollectionType.Authors, afAuth)
+      .get()
+      .subscribe((s) => (this.stats.authors = s ?? ({} as CollectionStats)));
+    new StatsService(afs, CollectionType.Genres, afAuth)
+      .get()
+      .subscribe((s) => (this.stats.genres = s ?? ({} as CollectionStats)));
+    new StatsService(afs, CollectionType.Locations, afAuth)
+      .get()
+      .subscribe((s) => (this.stats.locations = s ?? ({} as CollectionStats)));
+    new StatsService(afs, CollectionType.Publishers, afAuth)
+      .get()
+      .subscribe((s) => (this.stats.publishers = s ?? ({} as CollectionStats)));
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 }

@@ -1,16 +1,16 @@
-import {Publisher} from './publisher';
-import {Location} from './location';
-import {Author} from './author';
-import {Genre} from './genre';
-import {IModel} from './model.interface';
+import { Publisher } from './publisher';
+import { Location } from './location';
+import { Author } from './author';
+import { Genre } from './genre';
+import { IModel } from './model.interface';
 
 export class Item implements IModel {
-  id: string;
-  uid: string;
-  description: string;
-  publishers: Publisher[];
-  year: number;
-  location: Location;
-  authors: Author[];
-  genres: Genre[];
+  id?: string;
+  uid?: string;
+  description?: string;
+  publishers?: Publisher[];
+  year?: number;
+  location?: Location;
+  authors?: Author[];
+  genres?: Genre[];
 }
