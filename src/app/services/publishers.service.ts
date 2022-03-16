@@ -27,7 +27,9 @@ export class PublishersService extends BaseDtoService<
     };
   }
 
-  protected toModel(dto: IPublisherDTO): Publisher {
+  toModel(dto?: IPublisherDTO): Publisher {
+    if (!dto) return {};
+
     const obj = new Publisher();
     obj.id = dto.id;
     obj.uid = dto.uid;

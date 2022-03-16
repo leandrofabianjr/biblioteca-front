@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { ItemsService } from '../services/items.service';
 import { Item } from '../models/item';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort, Sort } from '@angular/material/sort';
 import { Author } from '../models/author';
@@ -14,6 +14,8 @@ import { LocationsNewComponent } from '../locations/locations-new/locations-new.
 import { Publisher } from '../models/publisher';
 import { PublishersNewComponent } from '../publishers/publishers-new/publishers-new.component';
 import { DialogConfirmationComponent } from '../dialog-confirmation/dialog-confirmation.component';
+
+const PAGINATOR_SIZE_OPTIONS = [5, 10, 100];
 
 @Component({
   selector: 'app-items',
@@ -30,23 +32,37 @@ export class ItemsComponent implements OnInit {
     'publishers',
     'location',
   ];
-  searchTerms: string[] = new Array(this.displayedColumns.length);
+  searchTerms: { [key: string]: string } = {};
   itemsSource = new MatTableDataSource<Item>();
+  readonly pageSizeOptions = PAGINATOR_SIZE_OPTIONS;
+  total = 0;
+  pageSize = this.pageSizeOptions[0];
+  pageIndex = 0;
   private items: Item[] = [];
 
-  @ViewChild(MatPaginator, { static: true }) paginator?: MatPaginator;
-  @ViewChild(MatSort, { static: true }) matSort?: MatSort;
+  // @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  // @ViewChild(MatSort, { static: true }) matSort!: MatSort;
 
   constructor(private itmSrv: ItemsService, public dialog: MatDialog) {}
 
   ngOnInit() {
-    this.itmSrv.data.subscribe((itms) => {
-      this.items = itms;
-      this.itemsSource.data = itms;
-      this.loading = false;
-    });
-    this.itemsSource.paginator = this.paginator ?? null;
-    this.itemsSource.sort = this.matSort ?? null;
+    // this.itemsSource.paginator = this.paginator;
+    // this.itemsSource.sort = this.matSort;
+
+    this.fetchData();
+  }
+
+  fetchData() {
+    this.loading = true;
+    this.itmSrv
+      .fetchForTable(this.pageSize, this.pageIndex, this.searchTerms)
+      .subscribe((res) => {
+        console.log(res);
+        this.items = res.data;
+        this.itemsSource.data = this.items;
+        this.total = res.total;
+        this.loading = res.loading;
+      });
   }
 
   editAuthor(author: Author) {
@@ -70,55 +86,58 @@ export class ItemsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((res: boolean) => {
       if (res) {
-        this.itmSrv.delete(item.id ?? '').subscribe(
-          (itm) => null,
-          (err) => console.error('Erro ao remover item')
-        );
+        // this.itmSrv.delete(item.id ?? '').subscribe(
+        //   (itm) => null,
+        //   (err) => console.error('Erro ao remover item')
+        // );
       }
     });
   }
 
   search(column: string, term: string) {
-    this.searchTerms[this.displayedColumns.indexOf(column)] = term;
-    let filteredItems = this.items?.slice();
-    this.searchTerms.map((t, i) => {
-      if (t) {
-        t = t.toLowerCase();
-        switch (this.displayedColumns[i]) {
-          case 'description':
-            filteredItems = filteredItems?.filter((itm) =>
-              itm.description?.toLowerCase().includes(t)
-            );
-            break;
-          case 'authors':
-            filteredItems = filteredItems?.filter((itm) =>
-              itm.authors?.find((a) => a.name?.toLowerCase().includes(t))
-            );
-            break;
-          case 'genres':
-            filteredItems = filteredItems?.filter((itm) =>
-              itm.genres?.find((g) => g.description?.toLowerCase().includes(t))
-            );
-            break;
-          case 'year':
-            filteredItems = filteredItems?.filter((itm) =>
-              itm.year?.toString().includes(t)
-            );
-            break;
-          case 'publishers':
-            filteredItems = filteredItems?.filter((itm) =>
-              itm.publishers?.find((p) => p.name?.toLowerCase().includes(t))
-            );
-            break;
-          case 'location':
-            filteredItems = filteredItems?.filter((itm) =>
-              itm.location?.description?.toLowerCase().includes(t)
-            );
-            break;
-        }
-      }
-    });
-    this.itemsSource.data = filteredItems ?? [];
+    this.searchTerms[column] = `%${term}%`;
+    console.log(this.searchTerms);
+    this.fetchData();
+
+    // let filteredItems = this.items?.slice();
+    // this.searchTerms.map((t, i) => {
+    //   if (t) {
+    //     t = t.toLowerCase();
+    //     switch (this.displayedColumns[i]) {
+    //       case 'description':
+    //         filteredItems = filteredItems?.filter((itm) =>
+    //           itm.description?.toLowerCase().includes(t)
+    //         );
+    //         break;
+    //       case 'authors':
+    //         filteredItems = filteredItems?.filter((itm) =>
+    //           itm.authors?.find((a) => a.name?.toLowerCase().includes(t))
+    //         );
+    //         break;
+    //       case 'genres':
+    //         filteredItems = filteredItems?.filter((itm) =>
+    //           itm.genres?.find((g) => g.description?.toLowerCase().includes(t))
+    //         );
+    //         break;
+    //       case 'year':
+    //         filteredItems = filteredItems?.filter((itm) =>
+    //           itm.year?.toString().includes(t)
+    //         );
+    //         break;
+    //       case 'publishers':
+    //         filteredItems = filteredItems?.filter((itm) =>
+    //           itm.publishers?.find((p) => p.name?.toLowerCase().includes(t))
+    //         );
+    //         break;
+    //       case 'location':
+    //         filteredItems = filteredItems?.filter((itm) =>
+    //           itm.location?.description?.toLowerCase().includes(t)
+    //         );
+    //         break;
+    //     }
+    //   }
+    // });
+    // this.itemsSource.data = filteredItems ?? [];
   }
 
   sort(sort: Sort) {
@@ -143,5 +162,12 @@ export class ItemsComponent implements OnInit {
       default:
         return;
     }
+  }
+
+  onPageChange(e: PageEvent) {
+    console.log(e);
+    this.pageSize = e.pageSize;
+    this.pageIndex = e.pageIndex;
+    this.fetchData();
   }
 }

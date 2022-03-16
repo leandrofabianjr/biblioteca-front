@@ -20,26 +20,27 @@ export class LoggedComponent implements OnInit, OnDestroy {
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
-    public auth: AuthService,
-    private itmSrv: ItemsService,
-    private autSrv: AuthorsService,
-    private gnrSrv: GenresService,
-    private pubSrv: PublishersService,
-    private locSrv: LocationsService
-  ) {
+    public auth: AuthService
+  ) // private itmSrv: ItemsService,
+  // private autSrv: AuthorsService,
+  // private gnrSrv: GenresService,
+  // private pubSrv: PublishersService,
+  // private locSrv: LocationsService
+  {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this.mobileQueryListener);
   }
 
   ngOnInit(): void {
-    this.autSrv.loaded.subscribe(() => this.gnrSrv.loadData().subscribe());
-    this.gnrSrv.loaded.subscribe(() => this.pubSrv.loadData().subscribe());
-    this.pubSrv.loaded.subscribe(() => this.locSrv.loadData().subscribe());
-    this.locSrv.loaded.subscribe(() =>
-      this.itmSrv.loadData().subscribe(() => (this.loading = false))
-    );
-    this.autSrv.loadData().subscribe();
+    // this.autSrv.loaded.subscribe(() => this.gnrSrv.loadData().subscribe());
+    // this.gnrSrv.loaded.subscribe(() => this.pubSrv.loadData().subscribe());
+    // this.pubSrv.loaded.subscribe(() => this.locSrv.loadData().subscribe());
+    // this.locSrv.loaded.subscribe(() =>
+    //   this.itmSrv.loadData().subscribe(() => (this.loading = false))
+    // );
+    // this.autSrv.loadData().subscribe();
+    this.loading = false;
   }
 
   ngOnDestroy(): void {

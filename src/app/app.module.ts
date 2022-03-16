@@ -57,6 +57,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AngularFireModule } from '@angular/fire/compat';
+import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
+import { InMemoryCache } from '@apollo/client/core';
+import { HttpLink } from 'apollo-angular/http';
 
 @NgModule({
   declarations: [
@@ -117,11 +120,24 @@ import { AngularFireModule } from '@angular/fire/compat';
     //   adSlot: 7259870550,
     // }),
     FormsModule,
+    ApolloModule,
   ],
   providers: [
     {
       provide: MatPaginatorIntl,
       useClass: MatPaginatorIntlPtbr,
+    },
+    {
+      provide: APOLLO_OPTIONS,
+      useFactory: (httpLink: HttpLink) => {
+        return {
+          cache: new InMemoryCache(),
+          link: httpLink.create({
+            uri: 'http://minha-biblioteca-hasura.herokuapp.com/v1/graphql',
+          }),
+        };
+      },
+      deps: [HttpLink],
     },
   ],
   bootstrap: [AppComponent],

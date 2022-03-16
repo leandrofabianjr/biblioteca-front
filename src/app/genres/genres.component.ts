@@ -50,31 +50,31 @@ export class GenresComponent implements OnInit {
   }
 
   remove(genre: Genre) {
-    this.itmSrv.data.pipe(first()).subscribe((itms) => {
-      if (
-        itms.find((i) => i.genres?.find((g) => g.id === genre.id) !== undefined)
-      ) {
-        this.dialog.open(DialogInfoComponent, {
-          data: {
-            title: 'Desculpe...',
-            message:
-              'Não é possível remover este gênero. Há itens relacionados a ele.',
-          },
-        });
-      } else {
-        this.dialog
-          .open(DialogConfirmationComponent)
-          .afterClosed()
-          .subscribe((res: boolean) => {
-            if (res) {
-              this.gnrSrv.delete(genre.id ?? '').subscribe(
-                (itm) => null,
-                (err) => console.error('Erro ao remover item')
-              );
-            }
-          });
-      }
-    });
+    // this.itmSrv.data.pipe(first()).subscribe((itms) => {
+    //   if (
+    //     itms.find((i) => i.genres?.find((g) => g.id === genre.id) !== undefined)
+    //   ) {
+    //     this.dialog.open(DialogInfoComponent, {
+    //       data: {
+    //         title: 'Desculpe...',
+    //         message:
+    //           'Não é possível remover este gênero. Há itens relacionados a ele.',
+    //       },
+    //     });
+    //   } else {
+    //     this.dialog
+    //       .open(DialogConfirmationComponent)
+    //       .afterClosed()
+    //       .subscribe((res: boolean) => {
+    //         if (res) {
+    //           this.gnrSrv.delete(genre.id ?? '').subscribe(
+    //             (itm) => null,
+    //             (err) => console.error('Erro ao remover item')
+    //           );
+    //         }
+    //       });
+    //   }
+    // });
   }
 
   edit(genre: Genre) {

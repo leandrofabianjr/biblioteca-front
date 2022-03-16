@@ -16,7 +16,7 @@ export class LocationsService extends BaseDtoService<Location, ILocationDTO> {
     super(afs, CollectionType.Locations, afAuth);
   }
 
-  protected toDto(obj: Location): ILocationDTO {
+  toDto(obj: Location): ILocationDTO {
     return {
       id: obj.id,
       uid: obj.uid,
@@ -24,10 +24,11 @@ export class LocationsService extends BaseDtoService<Location, ILocationDTO> {
     };
   }
 
-  protected toModel(dto: ILocationDTO): Location {
+  toModel(dto?: ILocationDTO): Location {
+    if (!dto) return {};
+
     const obj = new Location();
     obj.id = dto.id;
-    obj.uid = dto.uid;
     obj.description = dto.description;
     return obj;
   }

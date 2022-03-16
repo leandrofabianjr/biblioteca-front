@@ -16,7 +16,7 @@ export class AuthorsService extends BaseDtoService<Author, IAuthorDTO> {
     super(afs, CollectionType.Authors, afAuth);
   }
 
-  protected toDto(dto: Author): IAuthorDTO {
+  toDto(dto: Author): IAuthorDTO {
     return {
       id: dto.id,
       uid: dto.uid,
@@ -24,7 +24,9 @@ export class AuthorsService extends BaseDtoService<Author, IAuthorDTO> {
     };
   }
 
-  protected toModel(dto: IAuthorDTO): Author {
+  toModel(dto?: IAuthorDTO): Author {
+    if (!dto) return {};
+
     const obj = new Author();
     obj.id = dto.id;
     obj.uid = dto.uid;

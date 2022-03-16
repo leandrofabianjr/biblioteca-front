@@ -67,7 +67,7 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
     return this.loadedSjt.asObservable();
   }
 
-  protected abstract toModel(dto: T_DTO): T;
+  protected abstract toModel(dto?: T_DTO): T;
   protected abstract toDto(obj: T): T_DTO;
 
   loadData(): Observable<void> {

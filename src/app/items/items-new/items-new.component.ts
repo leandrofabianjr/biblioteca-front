@@ -48,13 +48,13 @@ export class ItemsNewComponent {
     this.route.params.subscribe((params) => {
       const id = params['id'];
       if (id) {
-        const itm = this.itmSrv.get(id);
-        if (itm) {
-          this.itemId = id;
-          this.buildForm(itm);
-        } else {
-          // Mostrar mensagem
-        }
+        // const itm = this.itmSrv.get(id);
+        // if (itm) {
+        //   this.itemId = id;
+        //   this.buildForm(itm);
+        // } else {
+        //   // Mostrar mensagem
+        // }
       } else {
         this.buildForm();
       }
@@ -87,22 +87,22 @@ export class ItemsNewComponent {
       item.location = this.itemForm.get('location')?.value;
       item.year = this.itemForm.get('year')?.value;
 
-      this.itmSrv.save(item).subscribe(
-        (itm) => {
-          this.snackBar.open('Item salvo com sucesso!', 'Ok', {
-            duration: 3000,
-          });
+      // this.itmSrv.save(item).subscribe(
+      //   (itm) => {
+      //     this.snackBar.open('Item salvo com sucesso!', 'Ok', {
+      //       duration: 3000,
+      //     });
 
-          this.itemForm?.reset();
-          this.router.navigate(['u', 'items', 'new']);
-        },
-        (err) => {
-          console.error('Erro ao salvar item', err);
-          this.snackBar.open('Ops, o item não pode ser cadastrado :(', 'Ok', {
-            duration: 3000,
-          });
-        }
-      );
+      //     this.itemForm?.reset();
+      //     this.router.navigate(['u', 'items', 'new']);
+      //   },
+      //   (err) => {
+      //     console.error('Erro ao salvar item', err);
+      //     this.snackBar.open('Ops, o item não pode ser cadastrado :(', 'Ok', {
+      //       duration: 3000,
+      //     });
+      //   }
+      // );
     }
   }
 

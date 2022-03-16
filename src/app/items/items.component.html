@@ -111,7 +111,7 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns.concat('actions');"></tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[5, 10, 100]" label></mat-paginator>
+  <mat-paginator [pageSizeOptions]="pageSizeOptions" [length]="total" (page)="onPageChange($event)" label></mat-paginator>
 
   <div *ngIf="loading" class="loading">
     <p>Carregando seus items...</p>

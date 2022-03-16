@@ -50,33 +50,33 @@ export class AuthorsComponent implements OnInit {
   }
 
   remove(author: Author) {
-    this.itmSrv.data.pipe(first()).subscribe((itms) => {
-      if (
-        itms.find(
-          (i) => i.authors?.find((a) => a.id === author.id) !== undefined
-        )
-      ) {
-        this.dialog.open(DialogInfoComponent, {
-          data: {
-            title: 'Desculpe...',
-            message:
-              'Não é possível remover este autor. Há itens relacionados a ele.',
-          },
-        });
-      } else {
-        this.dialog
-          .open(DialogConfirmationComponent)
-          .afterClosed()
-          .subscribe((res: boolean) => {
-            if (res) {
-              this.autSrv.delete(author.id ?? '').subscribe(
-                (itm) => null,
-                (err) => console.error('Erro ao remover item')
-              );
-            }
-          });
-      }
-    });
+    // this.itmSrv.data.pipe(first()).subscribe((itms) => {
+    //   if (
+    //     itms.find(
+    //       (i) => i.authors?.find((a) => a.id === author.id) !== undefined
+    //     )
+    //   ) {
+    //     this.dialog.open(DialogInfoComponent, {
+    //       data: {
+    //         title: 'Desculpe...',
+    //         message:
+    //           'Não é possível remover este autor. Há itens relacionados a ele.',
+    //       },
+    //     });
+    //   } else {
+    //     this.dialog
+    //       .open(DialogConfirmationComponent)
+    //       .afterClosed()
+    //       .subscribe((res: boolean) => {
+    //         if (res) {
+    //           this.autSrv.delete(author.id ?? '').subscribe(
+    //             (itm) => null,
+    //             (err) => console.error('Erro ao remover item')
+    //           );
+    //         }
+    //       });
+    //   }
+    // });
   }
 
   edit(author: Author) {

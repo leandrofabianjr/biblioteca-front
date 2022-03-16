@@ -16,7 +16,7 @@ export class GenresService extends BaseDtoService<Genre, IGenreDTO> {
     super(afs, CollectionType.Genres, afAuth);
   }
 
-  protected toDto(obj: Genre): IGenreDTO {
+  toDto(obj: Genre): IGenreDTO {
     return {
       id: obj.id,
       uid: obj.uid,
@@ -24,7 +24,9 @@ export class GenresService extends BaseDtoService<Genre, IGenreDTO> {
     };
   }
 
-  protected toModel(dto: IGenreDTO): Genre {
+  toModel(dto?: IGenreDTO): Genre {
+    if (!dto) return {};
+
     const obj = new Genre();
     obj.id = dto.id;
     obj.uid = dto.uid;
