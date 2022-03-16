@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Item } from '../models/item';
 import { map, Observable } from 'rxjs';
-import { Apollo, gql } from 'apollo-angular';
+import { Apollo, gql, TypedDocumentNode } from 'apollo-angular';
 import { HttpHeaders } from '@angular/common/http';
 import { AuthorsService, IAuthorDTO } from './authors.service';
 import { GenresService, IGenreDTO } from './genres.service';
 import { IPublisherDTO, PublishersService } from './publishers.service';
 import { ILocationDTO, LocationsService } from './locations.service';
+import { FetchForTableResponse, GrapgQLRepository } from './graphql-repository';
 
 export interface IWatchResponse<T> {
   loading: boolean;
@@ -101,20 +102,25 @@ const QUERY = gql`
 @Injectable({
   providedIn: 'root',
 })
-export class ItemsService {
+export class ItemsService extends GrapgQLRepository<Item, IItemDTO> {
+  repositoryName = 'items';
+  fetchForTableQuery = QUERY;
+
   constructor(
     private autSrv: AuthorsService,
     private gnrSrv: GenresService,
     private pubSrv: PublishersService,
     private locSrv: LocationsService,
-    private apollo: Apollo
-  ) {}
+    apollo: Apollo
+  ) {
+    super(apollo);
+  }
 
-  fetchForTable(
+  override fetchForTable(
     pageSize: number = 5,
     pageIndex: number = 0,
     searchTerms = {}
-  ): Observable<IWatchResponse<Item[]>> {
+  ): Observable<FetchForTableResponse<Item>> {
     let variables = {
       userId: '',
       limit: pageSize,
@@ -122,53 +128,7 @@ export class ItemsService {
       ...searchTerms,
     };
 
-    console.log(variables);
-
-    return this.apollo
-      .query<IItemsWithAggregate>({
-        query: QUERY,
-        variables,
-        context: {
-          headers: new HttpHeaders({
-            'x-hasura-admin-secret': '',
-          }),
-        },
-      })
-      .pipe(
-        map((result) => {
-          console.log(result);
-          return {
-            loading: result.loading,
-            data: result.data.items.map((dto) => this.toModel(dto)),
-            total: result.data.items_aggregate.aggregate.totalCount,
-          } as IWatchResponse<Item[]>;
-        })
-      );
-  }
-
-  protected toDto(obj: Item): IItemDTO {
-    return {
-      uuid: obj.id,
-      description: obj.description,
-      // publishers: obj.publishers?.map<DocumentReference<DocumentData>>(
-      //   (o) =>
-      //     this.afs.doc(`${CollectionType.Publishers}/${o.id}`)
-      //       .ref as DocumentReference<DocumentData>
-      // ),
-      // year: obj.year,
-      // location: this.afs.doc(`${CollectionType.Locations}/${obj.location?.id}`)
-      //   .ref as DocumentReference<DocumentData>,
-      // authors: obj.authors?.map<DocumentReference<DocumentData>>(
-      //   (o) =>
-      //     this.afs.doc(`${CollectionType.Authors}/${o.id}`)
-      //       .ref as DocumentReference<DocumentData>
-      // ),
-      // genres: obj.genres?.map<DocumentReference<DocumentData>>(
-      //   (o) =>
-      //     this.afs.doc(`${CollectionType.Genres}/${o.id}`)
-      //       .ref as DocumentReference<DocumentData>
-      // ),
-    };
+    return super.fetchForTable(variables);
   }
 
   public toModel(dto: IItemDTO): Item {
@@ -184,4 +144,29 @@ export class ItemsService {
     obj.genres = dto.genres?.map((_dto) => this.gnrSrv.toModel(_dto.genre));
     return obj;
   }
+
+  // protected toDto(obj: Item): IItemDTO {
+  //   return {
+  //     uuid: obj.id,
+  //     description: obj.description,
+  //     // publishers: obj.publishers?.map<DocumentReference<DocumentData>>(
+  //     //   (o) =>
+  //     //     this.afs.doc(`${CollectionType.Publishers}/${o.id}`)
+  //     //       .ref as DocumentReference<DocumentData>
+  //     // ),
+  //     // year: obj.year,
+  //     // location: this.afs.doc(`${CollectionType.Locations}/${obj.location?.id}`)
+  //     //   .ref as DocumentReference<DocumentData>,
+  //     // authors: obj.authors?.map<DocumentReference<DocumentData>>(
+  //     //   (o) =>
+  //     //     this.afs.doc(`${CollectionType.Authors}/${o.id}`)
+  //     //       .ref as DocumentReference<DocumentData>
+  //     // ),
+  //     // genres: obj.genres?.map<DocumentReference<DocumentData>>(
+  //     //   (o) =>
+  //     //     this.afs.doc(`${CollectionType.Genres}/${o.id}`)
+  //     //       .ref as DocumentReference<DocumentData>
+  //     // ),
+  //   };
+  // }
 }

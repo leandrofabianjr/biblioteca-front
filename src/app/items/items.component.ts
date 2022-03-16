@@ -96,7 +96,9 @@ export class ItemsComponent implements OnInit {
 
   search(column: string, term: string) {
     this.searchTerms[column] = `%${term}%`;
-    console.log(this.searchTerms);
+    this.pageIndex = 0;
+    this.pageSize = this.pageSizeOptions[0];
+
     this.fetchData();
 
     // let filteredItems = this.items?.slice();
