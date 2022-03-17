@@ -117,12 +117,13 @@ export class ItemsService extends GrapgQLRepository<Item, IItemDTO> {
   }
 
   override fetchForTable(
+    userId: string,
     pageSize: number = 5,
     pageIndex: number = 0,
     searchTerms = {}
   ): Observable<FetchForTableResponse<Item>> {
     let variables = {
-      userId: '',
+      userId,
       limit: pageSize,
       offset: pageIndex * pageSize,
       ...searchTerms,

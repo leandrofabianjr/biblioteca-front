@@ -3,33 +3,78 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { forkJoin, from, Observable, of } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { flatMap, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { GoogleAuthProvider } from 'firebase/auth';
+import { Apollo, gql } from 'apollo-angular';
+import { HASURA_ADMIN_SECRET, HASURA_CONTEXT } from './graphql-repository';
+import { HttpHeaders } from '@angular/common/http';
+import { AppUser } from '../models/user.';
+import { v4 as uuidv4 } from 'uuid';
 
-export interface IAppUserDTO {
-  uid: string;
-  email: string;
-  name: string;
-  photoUrl: string;
+const FIND_USER_BY_EMAIL_QUERY = gql`
+  query ($email: String!) {
+    users(where: { email: { _eq: $email } }) {
+      created_at
+      email
+      google_uid
+      name
+      profile_picture_url
+      updated_at
+      uuid
+    }
+  }
+`;
+
+const UPSERT_USER_MUTATION = gql`
+  mutation ($newUser: users_insert_input!) {
+    insert_users(
+      objects: [$newUser]
+      on_conflict: {
+        constraint: users_email_key
+        update_columns: [google_uid, profile_picture_url, name]
+      }
+    ) {
+      returning {
+        email
+        created_at
+        google_uid
+        name
+        profile_picture_url
+        uuid
+        updated_at
+      }
+    }
+  }
+`;
+
+export interface IUserDTO {
+  uuid: string;
+  email?: string;
+  google_uid?: string;
+  name?: string;
+  profile_picture_url?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  user: Observable<IAppUserDTO | null | undefined>;
-
   constructor(
     public afAuth: AngularFireAuth,
-    private afs: AngularFirestore,
+    private apollo: Apollo,
     private router: Router
-  ) {
-    this.user = this.afAuth.authState.pipe(
-      switchMap((user) =>
-        user
-          ? this.afs.doc<IAppUserDTO>(`users/${user.uid}`).valueChanges()
-          : of(null)
-      )
+  ) {}
+
+  private _currentUser?: AppUser;
+
+  get currentUser(): Observable<AppUser | undefined> {
+    if (this._currentUser) this.currentUser;
+
+    return this.afAuth.authState.pipe(
+      switchMap((user) => this.getUserByEmail(user?.email)),
+      map((user) => (this._currentUser = user))
     );
   }
 
@@ -47,56 +92,79 @@ export class AuthService {
     );
   }
 
-  googleLogin() {
-    return from(
-      this.afAuth
-        .signInWithPopup(new GoogleAuthProvider())
-        .then((credential) => this.updateUserData(credential.user))
-        .catch((err) => console.error(err))
+  googleLogin(): Observable<AppUser | undefined> {
+    return from(this.afAuth.signInWithPopup(new GoogleAuthProvider())).pipe(
+      switchMap((credential) => this.updateUserData(credential.user)),
+      map((user) => {
+        this._currentUser = user;
+        console.log(user);
+        return user;
+      })
     );
   }
 
-  private updateUserData(user: any) {
-    return this.afs
-      .doc(`users/${user.uid}`)
-      .set(
-        {
-          uid: user.uid,
-          email: user.email,
-          name: user.displayName,
-          photoUrl: user.photoURL,
-        },
-        { merge: true }
-      )
-      .then((u) => [u, this.createUsersStatsIfNotExists(user.uid).toPromise()])
-      .then(([u, _]) => (u != null ? u : null));
+  private getUserByEmail(
+    email?: string | null
+  ): Observable<AppUser | undefined> {
+    return this.apollo
+      .query({
+        query: FIND_USER_BY_EMAIL_QUERY,
+        variables: { email },
+        context: HASURA_CONTEXT,
+      })
+      .pipe(
+        map((result: any) => {
+          console.log('++++++++++');
+          console.log(result);
+          console.log('++++++++++');
+          const dto = result.data?.users?.[0];
+          if (!dto) return;
+          return this.toModel(dto);
+        })
+      );
   }
 
-  private createUsersStatsIfNotExists(uid: string): Observable<null> {
-    const newDoc = (stat: string) =>
-      of(this.afs.doc(`users/${uid}/stats/${stat}`).set({ count: 0 }));
-    return this.afs
-      .collection('users')
-      .doc(uid)
-      .collection('stats', (r) => r.limit(1))
-      .get()
+  toModel(dto: IUserDTO): AppUser {
+    let user = new AppUser();
+    user.uuid = dto.uuid;
+    user.email = dto.email;
+    user.google_uid = dto.google_uid;
+    user.name = dto.name;
+    user.profile_picture_url = dto.profile_picture_url;
+    user.created_at = dto.created_at;
+    user.updated_at = dto.updated_at;
+    return user;
+  }
+
+  private updateUserData(user: any): Observable<AppUser | undefined> {
+    const newUser: IUserDTO = {
+      uuid: uuidv4(),
+      email: user.email,
+      google_uid: user.uid,
+      name: user.displayName,
+      profile_picture_url: user.photoURL,
+    };
+    console.log(newUser);
+
+    return this.apollo
+      .mutate({
+        mutation: UPSERT_USER_MUTATION,
+        variables: { newUser },
+        context: HASURA_CONTEXT,
+      })
       .pipe(
-        flatMap((ss) => {
-          if (ss.size) {
-            return of();
-          }
-          return forkJoin([
-            newDoc('items'),
-            newDoc('authors'),
-            newDoc('genres'),
-            newDoc('locations'),
-            newDoc('publishers'),
-          ]).pipe(map(() => null));
+        map((result: any) => {
+          const dto = result?.data?.insert_users?.returning?.[0];
+          if (!dto) return;
+          return this.toModel(dto);
         })
       );
   }
 
   logout() {
-    this.afAuth.signOut().then(() => this.router.navigate(['/login']));
+    this.afAuth.signOut().then(() => {
+      this._currentUser = undefined;
+      this.router.navigate(['/login']);
+    });
   }
 }

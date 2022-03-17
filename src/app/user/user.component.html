@@ -1,9 +1,9 @@
 <!--<ng-adsense></ng-adsense>-->
 
-<div *ngIf="(auth.user | async) as user" class="container">
+<div *ngIf="user" class="container">
 
   <div class="avatar mat-elevation-z3">
-    <img [src]="user.photoUrl" [alt]="user.name">
+    <img [src]="user.profile_picture_url" [alt]="user.name">
   </div>
 
   <div class="name">

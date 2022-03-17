@@ -4,6 +4,7 @@ import { CollectionType } from '../services/base-dto.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AuthService } from '../services/auth.service';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AppUser } from '../models/user.';
 
 @Component({
   selector: 'app-user',
@@ -18,6 +19,8 @@ export class UserComponent implements OnInit {
     locations: {} as CollectionStats,
     publishers: {} as CollectionStats,
   };
+
+  user?: AppUser;
 
   constructor(
     public afs: AngularFirestore,
@@ -41,5 +44,7 @@ export class UserComponent implements OnInit {
       .subscribe((s) => (this.stats.publishers = s ?? ({} as CollectionStats)));
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.auth.currentUser.subscribe((user) => (this.user = user));
+  }
 }

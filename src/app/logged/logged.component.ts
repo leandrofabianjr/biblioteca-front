@@ -20,10 +20,8 @@ export class LoggedComponent implements OnInit, OnDestroy {
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
-    public auth: AuthService
-  ) // private itmSrv: ItemsService,
-  // private autSrv: AuthorsService,
-  // private gnrSrv: GenresService,
+    public auth: AuthService // private itmSrv: ItemsService, // private autSrv: AuthorsService,
+  ) // private gnrSrv: GenresService,
   // private pubSrv: PublishersService,
   // private locSrv: LocationsService
   {

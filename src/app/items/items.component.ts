@@ -14,6 +14,7 @@ import { LocationsNewComponent } from '../locations/locations-new/locations-new.
 import { Publisher } from '../models/publisher';
 import { PublishersNewComponent } from '../publishers/publishers-new/publishers-new.component';
 import { DialogConfirmationComponent } from '../dialog-confirmation/dialog-confirmation.component';
+import { AuthService } from '../services/auth.service';
 
 const PAGINATOR_SIZE_OPTIONS = [5, 10, 100];
 
@@ -43,7 +44,11 @@ export class ItemsComponent implements OnInit {
   // @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   // @ViewChild(MatSort, { static: true }) matSort!: MatSort;
 
-  constructor(private itmSrv: ItemsService, public dialog: MatDialog) {}
+  constructor(
+    private itmSrv: ItemsService,
+    public dialog: MatDialog,
+    private auth: AuthService
+  ) {}
 
   ngOnInit() {
     // this.itemsSource.paginator = this.paginator;
@@ -54,15 +59,23 @@ export class ItemsComponent implements OnInit {
 
   fetchData() {
     this.loading = true;
-    this.itmSrv
-      .fetchForTable(this.pageSize, this.pageIndex, this.searchTerms)
-      .subscribe((res) => {
-        console.log(res);
-        this.items = res.data;
-        this.itemsSource.data = this.items;
-        this.total = res.total;
-        this.loading = res.loading;
-      });
+    this.auth.currentUser.subscribe((user) => {
+      if (!user) return;
+      this.itmSrv
+        .fetchForTable(
+          user.uuid,
+          this.pageSize,
+          this.pageIndex,
+          this.searchTerms
+        )
+        .subscribe((res) => {
+          console.log(res);
+          this.items = res.data;
+          this.itemsSource.data = this.items;
+          this.total = res.total;
+          this.loading = false;
+        });
+    });
   }
 
   editAuthor(author: Author) {
