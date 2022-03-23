@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -7,23 +7,34 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
+  loading = true;
   loginError = false;
 
-  constructor(private auth: AuthService, private route: Router) {}
-
-  ngOnInit() {
-    this.auth.user.subscribe((u) => {
-      if (u) {
-        this.route.navigate(['u', 'items']);
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.route.queryParams.subscribe((params) => {
+      const jwt = params['jwt'];
+      if (jwt) {
+        this.doLoginWithJwt(jwt);
+      } else {
+        this.loading = false;
       }
     });
   }
 
-  googleLogin() {
-    this.auth.googleLogin().subscribe(null, (error) => {
-      this.loginError = true;
-      console.error(error);
+  doLoginWithJwt(jwt: string) {
+    this.auth.loginWithJwt(jwt).subscribe({
+      next: () => {
+        this.router.navigate(['u', 'me']);
+      },
+      error: (err) => {
+        this.loginError = true;
+        console.error(err);
+      },
     });
   }
 }

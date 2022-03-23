@@ -3,12 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
-import {
-  AngularFireAuthGuard,
-  canActivate,
-  redirectLoggedInTo,
-  redirectUnauthorizedTo,
-} from '@angular/fire/compat/auth-guard';
 import { AuthorsComponent } from './authors/authors.component';
 import { GenresComponent } from './genres/genres.component';
 import { LocationsComponent } from './locations/locations.component';
@@ -16,82 +10,71 @@ import { PublishersComponent } from './publishers/publishers.component';
 import { ItemsComponent } from './items/items.component';
 import { ItemsNewComponent } from './items/items-new/items-new.component';
 import { LoggedComponent } from './logged/logged.component';
-
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['/login']);
+import { AuthGuard } from './guards/auth.guard';
+import { NotAuthGuard } from './guards/not-auth.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'u/me', pathMatch: 'full' },
   {
     path: 'login',
     component: LoginComponent,
-    ...canActivate(() => redirectLoggedInTo(['u', 'me'])),
+    canActivate: [NotAuthGuard],
   },
 
   {
     path: 'u',
     component: LoggedComponent,
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectUnauthorizedToLogin },
     children: [
       {
         path: 'logout',
         component: LogoutComponent,
-        canActivate: [AngularFireAuthGuard],
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
+        canActivate: [AuthGuard],
       },
       {
         path: 'me',
         component: UserComponent,
-        canActivate: [AngularFireAuthGuard],
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
+        canActivate: [AuthGuard],
       },
 
       {
         path: 'authors',
         component: AuthorsComponent,
-        canActivate: [AngularFireAuthGuard],
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
+        canActivate: [AuthGuard],
       },
       {
         path: 'genres',
         component: GenresComponent,
-        canActivate: [AngularFireAuthGuard],
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
+        canActivate: [AuthGuard],
       },
       {
         path: 'locations',
         component: LocationsComponent,
-        canActivate: [AngularFireAuthGuard],
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
+        canActivate: [AuthGuard],
       },
       {
         path: 'publishers',
         component: PublishersComponent,
-        canActivate: [AngularFireAuthGuard],
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
+        canActivate: [AuthGuard],
       },
       {
         path: 'items',
-        canActivate: [AngularFireAuthGuard],
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
+        canActivate: [AuthGuard],
+
         children: [
           {
             path: '',
             component: ItemsComponent,
-            canActivate: [AngularFireAuthGuard],
-            data: { authGuardPipe: redirectUnauthorizedToLogin },
+            canActivate: [AuthGuard],
           },
           {
             path: 'new',
             component: ItemsNewComponent,
-            canActivate: [AngularFireAuthGuard],
-            data: { authGuardPipe: redirectUnauthorizedToLogin },
+            canActivate: [AuthGuard],
           },
           {
             path: ':id',
             component: ItemsNewComponent,
-            canActivate: [AngularFireAuthGuard],
-            data: { authGuardPipe: redirectUnauthorizedToLogin },
+            canActivate: [AuthGuard],
           },
         ],
       },

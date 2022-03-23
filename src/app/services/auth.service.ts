@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { forkJoin, from, Observable, of } from 'rxjs';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { flatMap, map, switchMap } from 'rxjs/operators';
-import { GoogleAuthProvider } from 'firebase/auth';
+import { map } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { User } from 'app/models/user';
+
+const UserData = {
+  exists: () => localStorage.getItem('user') != null,
+  get: () => JSON.parse(localStorage.getItem('user') ?? ''),
+  set: (data: any) => localStorage.setItem('user', JSON.stringify(data)),
+  remove: () => localStorage.removeItem('user'),
+};
 
 export interface IAppUserDTO {
   uid: string;
@@ -17,86 +23,31 @@ export interface IAppUserDTO {
   providedIn: 'root',
 })
 export class AuthService {
-  user: Observable<IAppUserDTO | null | undefined>;
+  constructor(private router: Router, private http: HttpClient) {}
 
-  constructor(
-    public afAuth: AngularFireAuth,
-    private afs: AngularFirestore,
-    private router: Router
-  ) {
-    this.user = this.afAuth.authState.pipe(
-      switchMap((user) =>
-        user
-          ? this.afs.doc<IAppUserDTO>(`users/${user.uid}`).valueChanges()
-          : of(null)
-      )
-    );
+  get currentUser(): User {
+    return UserData.get()?.user;
   }
 
-  get uid(): Observable<string> {
-    return this.afAuth.user.pipe(
-      map((u) => {
-        const uid = u?.uid ?? '';
-        console.log(uid, u);
+  get isUserLogged(): boolean {
+    return UserData.exists();
+  }
 
-        if (!uid) {
-          throw Error('Usuário não encontrado');
-        }
-        return uid;
+  loginWithJwt(jwt: any): Observable<void> {
+    const url = 'http://localhost:3000/auth/userdata';
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${jwt}`,
+    });
+    return this.http.get(url, { headers }).pipe(
+      map((data) => {
+        console.log(data);
+        UserData.set(data);
       })
     );
   }
 
-  googleLogin() {
-    return from(
-      this.afAuth
-        .signInWithPopup(new GoogleAuthProvider())
-        .then((credential) => this.updateUserData(credential.user))
-        .catch((err) => console.error(err))
-    );
-  }
-
-  private updateUserData(user: any) {
-    return this.afs
-      .doc(`users/${user.uid}`)
-      .set(
-        {
-          uid: user.uid,
-          email: user.email,
-          name: user.displayName,
-          photoUrl: user.photoURL,
-        },
-        { merge: true }
-      )
-      .then((u) => [u, this.createUsersStatsIfNotExists(user.uid).toPromise()])
-      .then(([u, _]) => (u != null ? u : null));
-  }
-
-  private createUsersStatsIfNotExists(uid: string): Observable<null> {
-    const newDoc = (stat: string) =>
-      of(this.afs.doc(`users/${uid}/stats/${stat}`).set({ count: 0 }));
-    return this.afs
-      .collection('users')
-      .doc(uid)
-      .collection('stats', (r) => r.limit(1))
-      .get()
-      .pipe(
-        flatMap((ss) => {
-          if (ss.size) {
-            return of();
-          }
-          return forkJoin([
-            newDoc('items'),
-            newDoc('authors'),
-            newDoc('genres'),
-            newDoc('locations'),
-            newDoc('publishers'),
-          ]).pipe(map(() => null));
-        })
-      );
-  }
-
   logout() {
-    this.afAuth.signOut().then(() => this.router.navigate(['/login']));
+    UserData.remove();
+    this.router.navigate(['/login']);
   }
 }

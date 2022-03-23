@@ -1,6 +1,6 @@
 <!--<ng-adsense></ng-adsense>-->
 
-<div *ngIf="(auth.user | async) as user" class="container">
+<div class="container">
 
   <div class="avatar mat-elevation-z3">
     <img [src]="user.photoUrl" [alt]="user.name">
@@ -13,10 +13,10 @@
 
   <div class="card mat-elevation-z3">
     <h2>Estatísticas</h2>
-    <p>Items: <strong>{{ stats?.items?.count }}</strong></p>
+    <!-- <p>Items: <strong>{{ stats?.items?.count }}</strong></p>
     <p>Autores: <strong>{{ stats?.authors?.count }}</strong></p>
     <p>Gêneros: <strong>{{ stats?.genres?.count }}</strong></p>
     <p>Editoras: <strong>{{ stats?.publishers?.count }}</strong></p>
-    <p>Locais: <strong>{{ stats?.locations?.count }}</strong></p>
+    <p>Locais: <strong>{{ stats?.locations?.count }}</strong></p> -->
   </div>
 </div>
