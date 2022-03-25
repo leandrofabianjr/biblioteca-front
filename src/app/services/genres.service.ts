@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BaseDtoService, CollectionType, IDto } from './base-dto.service';
+import { BaseDtoService, CollectionType, aaIDto } from './base-dto.service';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Genre } from '../models/genre';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
-export interface IGenreDTO extends IDto {
+export interface IGenreDTO extends aaIDto {
   description?: string;
 }
 

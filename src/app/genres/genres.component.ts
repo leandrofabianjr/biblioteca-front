@@ -52,7 +52,9 @@ export class GenresComponent implements OnInit {
   remove(genre: Genre) {
     this.itmSrv.data.pipe(first()).subscribe((itms) => {
       if (
-        itms.find((i) => i.genres?.find((g) => g.id === genre.id) !== undefined)
+        itms.data.find(
+          (i) => i.genres?.find((g) => g.id === genre.id) !== undefined
+        )
       ) {
         this.dialog.open(DialogInfoComponent, {
           data: {

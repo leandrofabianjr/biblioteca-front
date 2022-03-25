@@ -52,7 +52,7 @@ export class AuthorsComponent implements OnInit {
   remove(author: Author) {
     this.itmSrv.data.pipe(first()).subscribe((itms) => {
       if (
-        itms.find(
+        itms.data.find(
           (i) => i.authors?.find((a) => a.id === author.id) !== undefined
         )
       ) {

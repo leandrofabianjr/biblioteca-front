@@ -1,14 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { LocationsService } from '../services/locations.service';
-import { Location } from '../models/location';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
-import { DialogConfirmationComponent } from '../dialog-confirmation/dialog-confirmation.component';
-import { ItemsService } from '../services/items.service';
-import { DialogInfoComponent } from '../dialog-info/dialog-info.component';
-import { first } from 'rxjs/operators';
+import { PaginatedData, Pagination } from 'app/services/paginated-data';
+import { Location } from '../models/location';
+import { LocationsService } from '../services/locations.service';
 import { LocationsNewComponent } from './locations-new/locations-new.component';
 
 @Component({
@@ -19,64 +13,60 @@ import { LocationsNewComponent } from './locations-new/locations-new.component';
 export class LocationsComponent implements OnInit {
   loading = true;
   displayedColumns: string[] = ['description'];
-  locationsSource = new MatTableDataSource<Location>();
-  private locations?: Location[];
+  paginatedData!: PaginatedData<Location>;
 
-  @ViewChild(MatPaginator, { static: true }) paginator?: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort?: MatSort;
-
-  constructor(
-    private locSrv: LocationsService,
-    public dialog: MatDialog,
-    private itmSrv: ItemsService
-  ) {}
+  constructor(private locSrv: LocationsService, public dialog: MatDialog) {}
 
   ngOnInit() {
-    this.locSrv.data.subscribe((locs) => {
-      this.locations = locs;
-      this.locationsSource.data = locs;
+    this.locSrv.data.subscribe((data) => {
+      this.paginatedData = data;
       this.loading = false;
     });
-    this.locationsSource.paginator = this.paginator ?? null;
-    this.locationsSource.sort = this.sort ?? null;
+    this.fetch();
+  }
+
+  fetch(pagination?: Pagination) {
+    console.log(pagination);
+    this.locSrv.fetch(pagination).subscribe(() => console.log('foi'));
   }
 
   search(column: string, term: string) {
-    this.locationsSource.data =
-      (!term
-        ? this.locations
-        : this.locations?.filter((l) =>
-            l.description?.toLowerCase().includes(term.toLowerCase())
-          )) ?? [];
+    // TODO
   }
 
   remove(location: Location) {
-    this.itmSrv.data.pipe(first()).subscribe((itms) => {
-      if (itms.find((i) => i.location?.id === location.id)) {
-        this.dialog.open(DialogInfoComponent, {
-          data: {
-            title: 'Desculpe...',
-            message:
-              'Não é possível remover este local. Há itens relacionados a ele.',
-          },
-        });
-      } else {
-        this.dialog
-          .open(DialogConfirmationComponent)
-          .afterClosed()
-          .subscribe((res: boolean) => {
-            if (res) {
-              this.locSrv.delete(location.id ?? '').subscribe(
-                (itm) => null,
-                (err) => console.error('Erro ao remover item')
-              );
-            }
-          });
-      }
-    });
+    // this.itmSrv.data.pipe(first()).subscribe((itms) => {
+    //   if (itms.find((i) => i.location?.uuid === location.uuid)) {
+    //     this.dialog.open(DialogInfoComponent, {
+    //       data: {
+    //         title: 'Desculpe...',
+    //         message:
+    //           'Não é possível remover este local. Há itens relacionados a ele.',
+    //       },
+    //     });
+    //   } else {
+    //     this.dialog
+    //       .open(DialogConfirmationComponent)
+    //       .afterClosed()
+    //       .subscribe((res: boolean) => {
+    //         if (res) {
+    //           // this.locSrv.delete(location.id ?? '').subscribe(
+    //           //   (itm) => null,
+    //           //   (err) => console.error('Erro ao remover item')
+    //           // );
+    //         }
+    //       });
+    //   }
+    // });
   }
 
   edit(location: Location) {
     this.dialog.open(LocationsNewComponent, { data: location });
+  }
+
+  newLocation() {
+    const dialogRef = this.dialog.open(LocationsNewComponent);
+
+    dialogRef.afterClosed().subscribe(() => this.fetch());
   }
 }

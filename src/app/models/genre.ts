@@ -1,6 +1,6 @@
-import { IModel } from './model.interface';
+import { OldIModel } from './model.interface';
 
-export class Genre implements IModel {
+export class Genre implements OldIModel {
   id?: string;
   uid?: string;
   description?: string;

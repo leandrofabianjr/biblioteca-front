@@ -41,12 +41,13 @@ export class ItemsComponent implements OnInit {
 
   ngOnInit() {
     this.itmSrv.data.subscribe((itms) => {
-      this.items = itms;
-      this.itemsSource.data = itms;
+      this.items = itms.data;
+      this.itemsSource.data = itms.data;
       this.loading = false;
     });
     this.itemsSource.paginator = this.paginator ?? null;
     this.itemsSource.sort = this.matSort ?? null;
+    this.itmSrv.fetch();
   }
 
   editAuthor(author: Author) {
@@ -70,10 +71,10 @@ export class ItemsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((res: boolean) => {
       if (res) {
-        this.itmSrv.delete(item.id ?? '').subscribe(
-          (itm) => null,
-          (err) => console.error('Erro ao remover item')
-        );
+        // this.itmSrv.delete(item.id ?? '').subscribe(
+        //   (itm) => null,
+        //   (err) => console.error('Erro ao remover item')
+        // );
       }
     });
   }

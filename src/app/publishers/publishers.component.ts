@@ -50,33 +50,33 @@ export class PublishersComponent implements OnInit {
   }
 
   remove(publisher: Publisher) {
-    this.itmSrv.data.pipe(first()).subscribe((itms) => {
-      if (
-        itms.find(
-          (i) => i.publishers?.find((a) => a.id === publisher.id) !== undefined
-        )
-      ) {
-        this.dialog.open(DialogInfoComponent, {
-          data: {
-            title: 'Desculpe...',
-            message:
-              'Não é possível remover esta editora. Há itens relacionados a ela.',
-          },
-        });
-      } else {
-        this.dialog
-          .open(DialogConfirmationComponent)
-          .afterClosed()
-          .subscribe((res: boolean) => {
-            if (res) {
-              this.pubSrv.delete(publisher.id as '').subscribe(
-                (itm) => null,
-                (err) => console.error('Erro ao remover item')
-              );
-            }
-          });
-      }
-    });
+    // this.itmSrv.data.pipe(first()).subscribe((itms) => {
+    //   if (
+    //     itms.find(
+    //       (i) => i.publishers?.find((a) => a.id === publisher.id) !== undefined
+    //     )
+    //   ) {
+    //     this.dialog.open(DialogInfoComponent, {
+    //       data: {
+    //         title: 'Desculpe...',
+    //         message:
+    //           'Não é possível remover esta editora. Há itens relacionados a ela.',
+    //       },
+    //     });
+    //   } else {
+    //     this.dialog
+    //       .open(DialogConfirmationComponent)
+    //       .afterClosed()
+    //       .subscribe((res: boolean) => {
+    //         if (res) {
+    //           this.pubSrv.delete(publisher.id as '').subscribe(
+    //             (itm) => null,
+    //             (err) => console.error('Erro ao remover item')
+    //           );
+    //         }
+    //       });
+    //   }
+    // });
   }
 
   edit(publisher: Publisher) {

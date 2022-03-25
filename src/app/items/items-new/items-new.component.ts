@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemsService } from '../../services/items.service';
@@ -47,17 +47,20 @@ export class ItemsNewComponent {
   ) {
     this.route.params.subscribe((params) => {
       const id = params['id'];
-      if (id) {
-        const itm = this.itmSrv.get(id);
-        if (itm) {
+      if (!id) {
+        return this.buildForm();
+      }
+
+      this.itmSrv.get(id).subscribe({
+        next: (itm) => {
           this.itemId = id;
           this.buildForm(itm);
-        } else {
-          // Mostrar mensagem
-        }
-      } else {
-        this.buildForm();
-      }
+        },
+        error: () => {
+          this.buildForm();
+          // TODO: Mostrar 404
+        },
+      });
     });
   }
 
@@ -189,7 +192,7 @@ export class ItemsNewComponent {
   searchLocations(term: string) {
     this.locSrv.data.subscribe(
       (locs) =>
-        (this.locations = locs
+        (this.locations = locs.data
           .filter((l) =>
             l.description?.toLowerCase().includes(term.toLowerCase())
           )

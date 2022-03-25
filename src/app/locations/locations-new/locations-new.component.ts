@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LocationsService } from '../../services/locations.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Location } from '../../models/location';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-locations-new',
@@ -11,11 +12,13 @@ import { Location } from '../../models/location';
 })
 export class LocationsNewComponent implements OnInit {
   locationForm!: FormGroup;
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
-    private autSrv: LocationsService,
+    private locSrv: LocationsService,
     public dialogRef: MatDialogRef<LocationsNewComponent>,
+    private snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public location: Location
   ) {}
 
@@ -30,17 +33,20 @@ export class LocationsNewComponent implements OnInit {
 
   save() {
     if (this.locationForm?.valid) {
+      this.loading = true;
       let location = new Location();
-      location.id = this.location?.id;
+      location.uuid = this.location?.uuid;
       location.description = this.locationForm.get('description')?.value;
-
-      this.autSrv.save(location).subscribe(
-        (aut) => {
-          location = aut;
-          this.dialogRef.close(location);
+      console.log(location);
+      this.locSrv.save(location).subscribe({
+        next: (loc) => this.dialogRef.close(loc),
+        error: (err) => {
+          console.error('Erro ao salvar local', err);
+          const msg = err?.error?.message ?? err?.error?.message;
+          this.snackBar.open(`Não foi possível salvar. ${msg}`, 'Ok');
+          this.loading = false;
         },
-        (err) => console.error('Erro ao salvar location', err)
-      );
+      });
     }
   }
 }

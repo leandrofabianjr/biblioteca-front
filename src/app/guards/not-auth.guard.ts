@@ -11,13 +11,13 @@ import { AuthService } from 'app/services/auth.service';
   providedIn: 'root',
 })
 export class NotAuthGuard implements CanActivate {
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    if (!this.authService.isUserLogged) return true;
+    if (!AuthService.isUserLogged) return true;
 
     this.router.navigate(['/']);
     return false;

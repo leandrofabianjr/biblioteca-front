@@ -1,5 +1,8 @@
 <h1 mat-dialog-title>{{ location ? 'Editar' : 'Novo' }} local</h1>
-<div mat-dialog-content>
+<div *ngIf="loading" mat-dialog-content>
+<mat-spinner></mat-spinner>
+</div>
+<div *ngIf="!loading" mat-dialog-content>
   <form [formGroup]="locationForm">
     <mat-form-field>
       <input
@@ -16,7 +19,7 @@
 
   </form>
 </div>
-<div mat-dialog-actions>
+<div *ngIf="!loading" mat-dialog-actions>
   <button mat-button [mat-dialog-close]="null">Cancelar</button>
   <button mat-button [disabled]="locationForm.invalid" (click)="save()" class="btn btn-primary">Salvar</button>
 </div>

@@ -25,11 +25,15 @@ export interface IAppUserDTO {
 export class AuthService {
   constructor(private router: Router, private http: HttpClient) {}
 
-  get currentUser(): User {
+  static get token(): string {
+    return UserData.get()?.token?.access_token;
+  }
+
+  static get currentUser(): User {
     return UserData.get()?.user;
   }
 
-  get isUserLogged(): boolean {
+  static get isUserLogged(): boolean {
     return UserData.exists();
   }
 

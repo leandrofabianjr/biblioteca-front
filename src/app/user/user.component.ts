@@ -9,8 +9,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class UserComponent {
   user!: User;
-  constructor(auth: AuthService) {
-    console.log('rtertrte');
-    this.user = auth.currentUser;
+  constructor() {
+    this.user = AuthService.currentUser;
   }
 }

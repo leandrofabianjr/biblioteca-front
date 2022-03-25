@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { BaseDtoService, CollectionType, IDto } from './base-dto.service';
+import { BaseDtoService, CollectionType, aaIDto } from './base-dto.service';
 import { Author } from '../models/author';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
-export interface IAuthorDTO extends IDto {
+export interface IAuthorDTO extends aaIDto {
   name?: string;
 }
 

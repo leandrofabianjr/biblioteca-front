@@ -57,6 +57,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AngularFireModule } from '@angular/fire/compat';
+import { PaginatorComponent } from './paginator/paginator.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { AngularFireModule } from '@angular/fire/compat';
     LoggedComponent,
     DialogInfoComponent,
     BookOnlineSearchComponent,
+    PaginatorComponent,
   ],
   imports: [
     BrowserModule,
