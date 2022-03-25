@@ -25,6 +25,12 @@ export interface IAppUserDTO {
 export class AuthService {
   constructor(private router: Router, private http: HttpClient) {}
 
+  private static isTokenValid(token: string) {
+    const expiry = JSON.parse(atob(token.split('.')[1])).exp;
+    console.log(Math.floor(new Date().getTime() / 1000), expiry);
+    return Math.floor(new Date().getTime() / 1000) < expiry;
+  }
+
   static get token(): string {
     return UserData.get()?.token?.access_token;
   }
@@ -34,7 +40,13 @@ export class AuthService {
   }
 
   static get isUserLogged(): boolean {
-    return UserData.exists();
+    const token = this.token;
+    console.log(token);
+    if (token && this.isTokenValid(token)) {
+      return true;
+    }
+    UserData.remove();
+    return true;
   }
 
   loginWithJwt(jwt: any): Observable<void> {
