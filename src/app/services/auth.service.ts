@@ -7,7 +7,7 @@ import { User } from 'app/models/user';
 
 const UserData = {
   exists: () => localStorage.getItem('user') != null,
-  get: () => JSON.parse(localStorage.getItem('user') ?? ''),
+  get: () => JSON.parse(localStorage.getItem('user') ?? '{}'),
   set: (data: any) => localStorage.setItem('user', JSON.stringify(data)),
   remove: () => localStorage.removeItem('user'),
 };
@@ -27,7 +27,6 @@ export class AuthService {
 
   private static isTokenValid(token: string) {
     const expiry = JSON.parse(atob(token.split('.')[1])).exp;
-    console.log(Math.floor(new Date().getTime() / 1000), expiry);
     return Math.floor(new Date().getTime() / 1000) < expiry;
   }
 
@@ -41,12 +40,11 @@ export class AuthService {
 
   static get isUserLogged(): boolean {
     const token = this.token;
-    console.log(token);
     if (token && this.isTokenValid(token)) {
       return true;
     }
     UserData.remove();
-    return true;
+    return false;
   }
 
   loginWithJwt(jwt: any): Observable<void> {
@@ -54,12 +52,9 @@ export class AuthService {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${jwt}`,
     });
-    return this.http.get(url, { headers }).pipe(
-      map((data) => {
-        console.log(data);
-        UserData.set(data);
-      })
-    );
+    return this.http
+      .get(url, { headers })
+      .pipe(map((data) => UserData.set(data)));
   }
 
   logout() {

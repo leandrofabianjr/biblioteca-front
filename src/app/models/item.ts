@@ -5,8 +5,8 @@ import { Genre } from './genre';
 import { IModel, OldIModel } from './model.interface';
 
 export class Item implements OldIModel, IModel {
-  uuid?: string;
-  ownerId?: string;
+  uuid!: string;
+  ownerId!: string;
   id?: string;
   uid?: string;
   description?: string;

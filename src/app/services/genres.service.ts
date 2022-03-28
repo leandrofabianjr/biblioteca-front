@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseDtoService, CollectionType, aaIDto } from './base-dto.service';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Genre } from '../models/genre';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 export interface IGenreDTO extends aaIDto {
   description?: string;
@@ -12,8 +10,8 @@ export interface IGenreDTO extends aaIDto {
   providedIn: 'root',
 })
 export class GenresService extends BaseDtoService<Genre, IGenreDTO> {
-  constructor(afs: AngularFirestore, afAuth: AngularFireAuth) {
-    super(afs, CollectionType.Genres, afAuth);
+  constructor() {
+    super({}, CollectionType.Genres, {});
   }
 
   protected toDto(obj: Genre): IGenreDTO {

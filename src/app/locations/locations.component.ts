@@ -35,36 +35,14 @@ export class LocationsComponent implements OnInit {
   }
 
   remove(location: Location) {
-    // this.itmSrv.data.pipe(first()).subscribe((itms) => {
-    //   if (itms.find((i) => i.location?.uuid === location.uuid)) {
-    //     this.dialog.open(DialogInfoComponent, {
-    //       data: {
-    //         title: 'Desculpe...',
-    //         message:
-    //           'Não é possível remover este local. Há itens relacionados a ele.',
-    //       },
-    //     });
-    //   } else {
-    //     this.dialog
-    //       .open(DialogConfirmationComponent)
-    //       .afterClosed()
-    //       .subscribe((res: boolean) => {
-    //         if (res) {
-    //           // this.locSrv.delete(location.id ?? '').subscribe(
-    //           //   (itm) => null,
-    //           //   (err) => console.error('Erro ao remover item')
-    //           // );
-    //         }
-    //       });
-    //   }
-    // });
+    // TODO
   }
 
   edit(location: Location) {
     this.dialog.open(LocationsNewComponent, { data: location });
   }
 
-  newLocation() {
+  new() {
     const dialogRef = this.dialog.open(LocationsNewComponent);
 
     dialogRef.afterClosed().subscribe(() => this.fetch());

@@ -34,10 +34,11 @@ export class LocationsNewComponent implements OnInit {
   save() {
     if (this.locationForm?.valid) {
       this.loading = true;
+
       let location = new Location();
       location.uuid = this.location?.uuid;
       location.description = this.locationForm.get('description')?.value;
-      console.log(location);
+
       this.locSrv.save(location).subscribe({
         next: (loc) => this.dialogRef.close(loc),
         error: (err) => {

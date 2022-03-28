@@ -160,45 +160,19 @@ export class ItemsNewComponent {
   }
 
   searchAuthors(term: string) {
-    this.autSrv.data.subscribe(
-      (auts) =>
-        (this.authors = auts.filter((a) =>
-          a.name?.toLowerCase().includes(term.toLowerCase())
-        )),
-      (err) => console.error(err)
-    );
+    // TODO
   }
 
   searchPublishers(term: string) {
-    this.pubSrv.data.subscribe(
-      (edts) =>
-        (this.publishers = edts.filter((p) =>
-          p.name?.toLowerCase().includes(term.toLowerCase())
-        )),
-      (err) => console.error(err)
-    );
+    // TODO
   }
 
   searchGenres(term: string) {
-    this.gnrSrv.data.subscribe(
-      (gens) =>
-        (this.genres = gens.filter((g) =>
-          g.description?.toLowerCase().includes(term.toLowerCase())
-        )),
-      (err) => console.error(err)
-    );
+    // TODO
   }
 
   searchLocations(term: string) {
-    this.locSrv.data.subscribe(
-      (locs) =>
-        (this.locations = locs.data
-          .filter((l) =>
-            l.description?.toLowerCase().includes(term.toLowerCase())
-          )
-          .slice(0, 4)),
-      (err) => console.error(err)
-    );
+    // TODO
   }
 
   onlineSearch() {

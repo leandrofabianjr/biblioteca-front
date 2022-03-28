@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { BaseDtoService, CollectionType, aaIDto } from './base-dto.service';
 import { Author } from '../models/author';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 export interface IAuthorDTO extends aaIDto {
   name?: string;
@@ -12,8 +10,8 @@ export interface IAuthorDTO extends aaIDto {
   providedIn: 'root',
 })
 export class AuthorsService extends BaseDtoService<Author, IAuthorDTO> {
-  constructor(afs: AngularFirestore, afAuth: AngularFireAuth) {
-    super(afs, CollectionType.Authors, afAuth);
+  constructor() {
+    super({}, CollectionType.Authors, {});
   }
 
   protected toDto(dto: Author): IAuthorDTO {

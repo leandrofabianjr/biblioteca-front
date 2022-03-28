@@ -1,17 +1,11 @@
 <h1 mat-dialog-title>{{ location ? 'Editar' : 'Novo' }} local</h1>
 <div *ngIf="loading" mat-dialog-content>
-<mat-spinner></mat-spinner>
+  <mat-spinner></mat-spinner>
 </div>
 <div *ngIf="!loading" mat-dialog-content>
   <form [formGroup]="locationForm">
     <mat-form-field>
-      <input
-        matInput
-        type="text"
-        id="description"
-        formControlName="description"
-        placeholder="Descrição"
-      >
+      <input matInput type="text" id="description" formControlName="description" placeholder="Descrição">
       <mat-error>
         <app-info-erro-campo [control]="locationForm.controls['description']"></app-info-erro-campo>
       </mat-error>
