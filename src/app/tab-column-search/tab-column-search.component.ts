@@ -16,4 +16,15 @@ export class TabColumnSearchComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  termChange(term?: string) {
+    console.log(term);
+    this.search.emit(term);
+  }
+
+  close() {
+    this.displayInput = false;
+    this.inputText = '';
+    this.termChange();
+  }
 }

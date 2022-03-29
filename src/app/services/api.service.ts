@@ -49,11 +49,15 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
     return paginatedData;
   }
 
-  private paginationToParams(pagination: Pagination) {
-    return {
+  private getFecthParams(pagination: Pagination, search?: any) {
+    let params = {
       limit: pagination.pageSize,
       offset: pagination.pageSize * pagination.page,
     };
+    if (search && search != {}) {
+      return { search, ...params };
+    }
+    return params;
   }
 
   protected abstract toModel(dto: T_DTO): T;
@@ -75,10 +79,10 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
     return this.http.get<T>(url, { headers });
   }
 
-  fetch(pagination = new Pagination()): Observable<void> {
+  fetch(pagination = new Pagination(), search?: any): Observable<void> {
     const url = this.url.fetch();
     const headers = this.authHeaders;
-    const params = this.paginationToParams(pagination);
+    const params = this.getFecthParams(pagination, search);
     return this.http
       .get<PaginatedResponse<T_DTO>>(url, { headers, params })
       .pipe(

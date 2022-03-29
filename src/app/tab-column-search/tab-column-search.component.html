@@ -6,8 +6,7 @@
 <div class="input-search-container" [ngStyle]="{display: (displayInput || !!inputText) ? 'block' : 'none'}">
   <mat-form-field class="input-search" appearance="outline">
     <mat-label>Pesquisar...</mat-label>
-    <input matInput (appRealTimeSearch)="search.emit($event)" [(ngModel)]="inputText">
-    <mat-icon class="close-icon" matSuffix
-      (click)="displayInput = false; inputText = ''; search.emit(undefined)">close</mat-icon>
+    <input matInput (appRealTimeSearch)="termChange($event)" [(ngModel)]="inputText">
+    <mat-icon class="close-icon" matSuffix (click)="close()">close</mat-icon>
   </mat-form-field>
 </div>
