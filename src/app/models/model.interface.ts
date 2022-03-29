@@ -5,5 +5,5 @@ export interface OldIModel {
 
 export interface IModel {
   uuid?: string;
-  ownerId?: string;
+  ownerUuid?: string;
 }

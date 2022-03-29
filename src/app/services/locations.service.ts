@@ -18,7 +18,7 @@ export class LocationsService extends ApiService<Location, ILocationDTO> {
   protected toDto(obj: Location): ILocationDTO {
     return {
       uuid: obj.uuid,
-      ownerId: obj.ownerId,
+      ownerUuid: obj.ownerUuid,
       description: obj.description,
     };
   }
@@ -26,7 +26,7 @@ export class LocationsService extends ApiService<Location, ILocationDTO> {
   protected toModel(dto: ILocationDTO): Location {
     const obj = new Location();
     obj.uuid = dto.uuid;
-    obj.ownerId = dto.ownerId;
+    obj.ownerUuid = dto.ownerUuid;
     obj.description = dto.description;
     return obj;
   }

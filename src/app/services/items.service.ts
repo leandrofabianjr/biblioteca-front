@@ -27,7 +27,7 @@ export class ItemsService extends ApiService<Item, IItemDTO> {
   protected toModel(dto: IItemDTO): Item {
     const obj = new Item();
     obj.id = dto.uuid;
-    obj.uid = dto.ownerId;
+    obj.uid = dto.ownerUuid;
     obj.year = dto.year;
     obj.description = dto.description;
     // obj.location = this.locSrv.get(dto.location?.id ?? '');

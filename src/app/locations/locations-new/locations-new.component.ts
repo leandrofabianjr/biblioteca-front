@@ -24,10 +24,7 @@ export class LocationsNewComponent implements OnInit {
 
   ngOnInit() {
     this.locationForm = this.fb.group({
-      description: [
-        this.location ? this.location.description : '',
-        Validators.required,
-      ],
+      description: [this.location?.description ?? '', Validators.required],
     });
   }
 
@@ -37,6 +34,7 @@ export class LocationsNewComponent implements OnInit {
 
       let location = new Location();
       location.uuid = this.location?.uuid;
+      location.ownerUuid = this.location?.ownerUuid;
       location.description = this.locationForm.get('description')?.value;
 
       this.locSrv.save(location).subscribe({

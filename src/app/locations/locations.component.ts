@@ -39,12 +39,16 @@ export class LocationsComponent implements OnInit {
   }
 
   edit(location: Location) {
-    this.dialog.open(LocationsNewComponent, { data: location });
+    this.dialog
+      .open(LocationsNewComponent, { data: location })
+      .afterClosed()
+      .subscribe(() => this.fetch());
   }
 
   new() {
-    const dialogRef = this.dialog.open(LocationsNewComponent);
-
-    dialogRef.afterClosed().subscribe(() => this.fetch());
+    this.dialog
+      .open(LocationsNewComponent)
+      .afterClosed()
+      .subscribe(() => this.fetch());
   }
 }

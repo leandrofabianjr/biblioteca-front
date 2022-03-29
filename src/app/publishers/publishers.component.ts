@@ -39,12 +39,16 @@ export class PublishersComponent implements OnInit {
   }
 
   edit(publisher: Publisher) {
-    this.dialog.open(PublishersNewComponent, { data: publisher });
+    this.dialog
+      .open(PublishersNewComponent, { data: publisher })
+      .afterClosed()
+      .subscribe(() => this.fetch());
   }
 
   new() {
-    const dialogRef = this.dialog.open(PublishersNewComponent);
-
-    dialogRef.afterClosed().subscribe(() => this.fetch());
+    const dialogRef = this.dialog
+      .open(PublishersNewComponent)
+      .afterClosed()
+      .subscribe(() => this.fetch());
   }
 }

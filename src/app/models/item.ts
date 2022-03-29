@@ -6,7 +6,7 @@ import { IModel, OldIModel } from './model.interface';
 
 export class Item implements OldIModel, IModel {
   uuid!: string;
-  ownerId!: string;
+  ownerUuid!: string;
   id?: string;
   uid?: string;
   description?: string;

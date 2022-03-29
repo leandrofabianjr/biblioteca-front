@@ -18,7 +18,7 @@ export class PublishersService extends ApiService<Publisher, IPublisherDTO> {
   protected toDto(obj: Publisher): IPublisherDTO {
     return {
       uuid: obj.uuid!,
-      ownerId: obj.ownerId!,
+      ownerUuid: obj.ownerUuid!,
       name: obj.name,
     };
   }
@@ -26,7 +26,7 @@ export class PublishersService extends ApiService<Publisher, IPublisherDTO> {
   protected toModel(dto: IPublisherDTO): Publisher {
     const obj = new Publisher();
     obj.uuid = dto.uuid;
-    obj.ownerId = dto.ownerId;
+    obj.ownerUuid = dto.ownerUuid;
     obj.name = dto.name;
     return obj;
   }

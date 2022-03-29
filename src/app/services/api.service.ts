@@ -11,7 +11,7 @@ const API_URL_BASE = environment.apiUrlBase;
 
 export interface IDto {
   uuid: string;
-  ownerId: string;
+  ownerUuid: string;
 }
 
 export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
@@ -34,10 +34,10 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
   }
 
   private paginatedResponseToPaginatedData(
-    res: PaginatedResponse<T>
+    res: PaginatedResponse<T_DTO>
   ): PaginatedData<T> {
     const paginatedData = new PaginatedData<T>();
-    paginatedData.data = res.data;
+    paginatedData.data = res.data?.map((dto) => this.toModel(dto));
     paginatedData.total = res.total;
     if (res.limit) {
       paginatedData.pageSize = res.limit;
@@ -78,12 +78,13 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
     const url = this.url.fetch();
     const headers = this.authHeaders;
     const params = this.paginationToParams(pagination);
-    return this.http.get<PaginatedResponse<T>>(url, { headers, params }).pipe(
-      map((res) => {
-        console.log(res);
-        this.$data.next(this.paginatedResponseToPaginatedData(res));
-      })
-    );
+    return this.http
+      .get<PaginatedResponse<T_DTO>>(url, { headers, params })
+      .pipe(
+        map((res) =>
+          this.$data.next(this.paginatedResponseToPaginatedData(res))
+        )
+      );
   }
 
   create(obj: T): Observable<T> {

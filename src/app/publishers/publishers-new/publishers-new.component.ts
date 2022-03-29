@@ -24,7 +24,7 @@ export class PublishersNewComponent implements OnInit {
 
   ngOnInit() {
     this.publisherForm = this.fb.group({
-      name: [this.publisher ? this.publisher.name : '', Validators.required],
+      name: [this.publisher?.name ?? '', Validators.required],
     });
   }
 
@@ -33,7 +33,8 @@ export class PublishersNewComponent implements OnInit {
       this.loading = true;
 
       const publisher = new Publisher();
-      publisher.uuid = this.publisher ? this.publisher.uuid : undefined;
+      publisher.uuid = this.publisher?.uuid;
+      publisher.ownerUuid = this.publisher?.ownerUuid;
       publisher.name = this.publisherForm.get('name')?.value;
 
       this.autSrv.save(publisher).subscribe({
