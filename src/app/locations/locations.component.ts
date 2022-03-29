@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { DialogConfirmationComponent } from 'app/dialog-confirmation/dialog-confirmation.component';
+import { AlertService } from 'app/services/alert.service';
 import { PaginatedData, Pagination } from 'app/services/paginated-data';
 import { Location } from '../models/location';
 import { LocationsService } from '../services/locations.service';
@@ -15,7 +17,11 @@ export class LocationsComponent implements OnInit {
   displayedColumns: string[] = ['description'];
   paginatedData!: PaginatedData<Location>;
 
-  constructor(private locSrv: LocationsService, public dialog: MatDialog) {}
+  constructor(
+    private locSrv: LocationsService,
+    public dialog: MatDialog,
+    private alert: AlertService
+  ) {}
 
   ngOnInit() {
     this.locSrv.data.subscribe((data) => {
@@ -35,7 +41,25 @@ export class LocationsComponent implements OnInit {
   }
 
   remove(location: Location) {
-    // TODO
+    this.dialog
+      .open(DialogConfirmationComponent)
+      .afterClosed()
+      .subscribe((toRemove: boolean) => {
+        if (toRemove) {
+          this.locSrv.remove(location).subscribe({
+            next: () => {
+              this.alert.success('Removido com sucesso.');
+              this.fetch();
+            },
+            error: (err) => {
+              console.error('Erro ao remover.', err);
+              const msg = err?.error?.message;
+              this.alert.error(`Não foi possível remover. ${msg}`);
+              this.loading = false;
+            },
+          });
+        }
+      });
   }
 
   edit(location: Location) {
@@ -49,6 +73,9 @@ export class LocationsComponent implements OnInit {
     this.dialog
       .open(LocationsNewComponent)
       .afterClosed()
-      .subscribe(() => this.fetch());
+      .subscribe(() => {
+        this.alert.success('Local criado com sucesso');
+        this.fetch();
+      });
   }
 }

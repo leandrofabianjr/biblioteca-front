@@ -16,11 +16,12 @@ export interface IDto {
 
 export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
   readonly url = {
+    authUserData: () => `auth/userdata`,
     get: (uuid: string) => `${API_URL_BASE}/${this.endpoint}/${uuid}`,
     fetch: () => `${API_URL_BASE}/${this.endpoint}`,
     create: () => `${API_URL_BASE}/${this.endpoint}`,
     update: (uuid: string) => `${API_URL_BASE}/${this.endpoint}/${uuid}`,
-    authUserData: () => `auth/userdata`,
+    remove: (uuid: string) => `${API_URL_BASE}/${this.endpoint}/${uuid}`,
   };
 
   private $data = new BehaviorSubject<PaginatedData<T>>(new PaginatedData<T>());
@@ -93,26 +94,28 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
     const dto = this.toDto(obj);
     console.log(dto);
     const headers = this.authHeaders;
-    return this.http.post<T_DTO>(url, dto, { headers }).pipe(
-      map((dto) => {
-        console.log(dto);
-        return this.toModel(dto);
-      })
-    );
+    return this.http
+      .post<T_DTO>(url, dto, { headers })
+      .pipe(map((dto) => this.toModel(dto)));
   }
 
-  save(obj: T): Observable<T> {
-    if (!obj?.uuid) return this.create(obj);
-
-    const url = this.url.update(obj.uuid);
+  update(obj: T): Observable<T> {
+    const url = this.url.update(obj.uuid!);
     const dto = this.toDto(obj);
     console.log(dto);
     const headers = this.authHeaders;
-    return this.http.put<T_DTO>(url, dto, { headers }).pipe(
-      map((dto) => {
-        console.log(dto);
-        return this.toModel(dto);
-      })
-    );
+    return this.http
+      .put<T_DTO>(url, dto, { headers })
+      .pipe(map((dto) => this.toModel(dto)));
+  }
+
+  save(obj: T): Observable<T> {
+    return !obj?.uuid ? this.create(obj) : this.update(obj);
+  }
+
+  remove(obj: T): Observable<void> {
+    const url = this.url.remove(obj.uuid!);
+    const headers = this.authHeaders;
+    return this.http.delete(url, { headers }).pipe(map(() => undefined));
   }
 }

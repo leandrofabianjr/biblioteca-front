@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { DialogConfirmationComponent } from 'app/dialog-confirmation/dialog-confirmation.component';
+import { AlertService } from 'app/services/alert.service';
 import { PaginatedData, Pagination } from 'app/services/paginated-data';
 import { Publisher } from '../models/publisher';
 import { PublishersNewComponent } from '../publishers/publishers-new/publishers-new.component';
@@ -15,7 +17,11 @@ export class PublishersComponent implements OnInit {
   displayedColumns: string[] = ['name'];
   paginatedData!: PaginatedData<Publisher>;
 
-  constructor(private pubSrv: PublishersService, public dialog: MatDialog) {}
+  constructor(
+    private pubSrv: PublishersService,
+    public dialog: MatDialog,
+    private alert: AlertService
+  ) {}
 
   ngOnInit() {
     this.pubSrv.data.subscribe((data) => {
@@ -27,7 +33,7 @@ export class PublishersComponent implements OnInit {
 
   fetch(pagination?: Pagination) {
     console.log(pagination);
-    this.pubSrv.fetch(pagination).subscribe(() => console.log('foi'));
+    this.pubSrv.fetch(pagination).subscribe(() => undefined);
   }
 
   search(column: string, term: string) {
@@ -35,7 +41,25 @@ export class PublishersComponent implements OnInit {
   }
 
   remove(publisher: Publisher) {
-    // TODO
+    this.dialog
+      .open(DialogConfirmationComponent)
+      .afterClosed()
+      .subscribe((toRemove: boolean) => {
+        if (toRemove) {
+          this.pubSrv.remove(publisher).subscribe({
+            next: () => {
+              this.alert.success('Removida com sucesso.');
+              this.fetch();
+            },
+            error: (err) => {
+              console.error('Erro ao remover.', err);
+              const msg = err?.error?.message;
+              this.alert.error(`Não foi possível remover. ${msg}`);
+              this.loading = false;
+            },
+          });
+        }
+      });
   }
 
   edit(publisher: Publisher) {
@@ -49,6 +73,9 @@ export class PublishersComponent implements OnInit {
     const dialogRef = this.dialog
       .open(PublishersNewComponent)
       .afterClosed()
-      .subscribe(() => this.fetch());
+      .subscribe(() => {
+        this.alert.success('Editora criada com sucesso');
+        this.fetch();
+      });
   }
 }
