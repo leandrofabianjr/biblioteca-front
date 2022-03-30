@@ -55,7 +55,7 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
       offset: pagination.pageSize * pagination.page,
     };
     if (search && Object.keys(search).length) {
-      return { search, ...params };
+      return { search: JSON.stringify(search), ...params };
     }
     return params;
   }

@@ -16,6 +16,7 @@ export class LocationsComponent implements OnInit {
   loading = true;
   displayedColumns: string[] = ['description'];
   paginatedData!: PaginatedData<Location>;
+  searchQuery = {};
 
   constructor(
     private locSrv: LocationsService,
@@ -32,12 +33,12 @@ export class LocationsComponent implements OnInit {
   }
 
   fetch(pagination?: Pagination) {
-    console.log(pagination);
-    this.locSrv.fetch(pagination).subscribe(() => console.log('foi'));
+    this.locSrv.fetch(pagination, this.searchQuery).subscribe(() => undefined);
   }
 
   search(column: string, term: string) {
-    // TODO
+    this.searchQuery = { ...this.searchQuery, [column]: term };
+    this.fetch();
   }
 
   remove(location: Location) {

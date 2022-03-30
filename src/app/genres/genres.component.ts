@@ -16,6 +16,7 @@ export class GenresComponent implements OnInit {
   loading = true;
   displayedColumns: string[] = ['description'];
   paginatedData!: PaginatedData<Genre>;
+  searchQuery = {};
 
   constructor(
     private gnrSrv: GenresService,
@@ -32,12 +33,12 @@ export class GenresComponent implements OnInit {
   }
 
   fetch(pagination?: Pagination) {
-    console.log(pagination);
-    this.gnrSrv.fetch(pagination).subscribe(() => console.log('foi'));
+    this.gnrSrv.fetch(pagination, this.searchQuery).subscribe(() => undefined);
   }
 
   search(column: string, term: string) {
-    // TODO
+    this.searchQuery = { ...this.searchQuery, [column]: term };
+    this.fetch();
   }
 
   remove(genre: Genre) {

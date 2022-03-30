@@ -33,12 +33,10 @@ export class AuthorsComponent implements OnInit {
   }
 
   fetch(pagination?: Pagination) {
-    console.log(pagination);
     this.autSrv.fetch(pagination, this.searchQuery).subscribe(() => undefined);
   }
 
   search(column: string, term: string) {
-    console.log(column, term);
     this.searchQuery = { ...this.searchQuery, [column]: term };
     this.fetch();
   }
