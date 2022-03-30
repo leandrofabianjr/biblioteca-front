@@ -76,9 +76,11 @@ export class PublishersComponent implements OnInit {
     const dialogRef = this.dialog
       .open(PublishersNewComponent)
       .afterClosed()
-      .subscribe(() => {
-        this.alert.success('Editora criada com sucesso');
-        this.fetch();
+      .subscribe((pub) => {
+        if (pub) {
+          this.alert.success('Editora criada com sucesso');
+          this.fetch();
+        }
       });
   }
 }

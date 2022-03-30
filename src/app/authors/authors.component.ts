@@ -1,15 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { AuthorsService } from '../services/authors.service';
-import { Author } from '../models/author';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort } from '@angular/material/sort';
-import { ItemsService } from '../services/items.service';
-import { first } from 'rxjs/operators';
-import { DialogInfoComponent } from '../dialog-info/dialog-info.component';
-import { DialogConfirmationComponent } from '../dialog-confirmation/dialog-confirmation.component';
-import { AuthorsNewComponent } from './authors-new/authors-new.component';
+import { DialogConfirmationComponent } from 'app/dialog-confirmation/dialog-confirmation.component';
+import { AlertService } from 'app/services/alert.service';
+import { PaginatedData, Pagination } from 'app/services/paginated-data';
+import { Author } from '../models/author';
+import { AuthorsNewComponent } from '../authors/authors-new/authors-new.component';
+import { AuthorsService } from '../services/authors.service';
 
 @Component({
   selector: 'app-authors',
@@ -19,67 +15,72 @@ import { AuthorsNewComponent } from './authors-new/authors-new.component';
 export class AuthorsComponent implements OnInit {
   loading = true;
   displayedColumns: string[] = ['name'];
-  authorsSource = new MatTableDataSource<Author>();
-  private authors: Author[] = [];
-
-  @ViewChild(MatPaginator, { static: true }) paginator?: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort?: MatSort;
+  paginatedData!: PaginatedData<Author>;
+  searchQuery = {};
 
   constructor(
     private autSrv: AuthorsService,
     public dialog: MatDialog,
-    private itmSrv: ItemsService
+    private alert: AlertService
   ) {}
 
   ngOnInit() {
-    this.autSrv.data.subscribe((auts) => {
-      this.authors = auts;
-      this.authorsSource.data = auts;
+    this.autSrv.data.subscribe((data) => {
+      this.paginatedData = data;
       this.loading = false;
     });
-    this.authorsSource.paginator = this.paginator ?? null;
-    this.authorsSource.sort = this.sort ?? null;
+    this.fetch();
+  }
+
+  fetch(pagination?: Pagination) {
+    console.log(pagination);
+    this.autSrv.fetch(pagination, this.searchQuery).subscribe(() => undefined);
   }
 
   search(column: string, term: string) {
-    this.authorsSource.data = !term
-      ? this.authors
-      : this.authors.filter((l) =>
-          l.name?.toLowerCase().includes(term.toLowerCase())
-        );
+    console.log(column, term);
+    this.searchQuery = { ...this.searchQuery, [column]: term };
+    this.fetch();
   }
 
   remove(author: Author) {
-    this.itmSrv.data.pipe(first()).subscribe((itms) => {
-      if (
-        itms.data.find(
-          (i) => i.authors?.find((a) => a.id === author.id) !== undefined
-        )
-      ) {
-        this.dialog.open(DialogInfoComponent, {
-          data: {
-            title: 'Desculpe...',
-            message:
-              'Não é possível remover este autor. Há itens relacionados a ele.',
-          },
-        });
-      } else {
-        this.dialog
-          .open(DialogConfirmationComponent)
-          .afterClosed()
-          .subscribe((res: boolean) => {
-            if (res) {
-              this.autSrv.delete(author.id ?? '').subscribe(
-                (itm) => null,
-                (err) => console.error('Erro ao remover item')
-              );
-            }
+    this.dialog
+      .open(DialogConfirmationComponent)
+      .afterClosed()
+      .subscribe((toRemove: boolean) => {
+        if (toRemove) {
+          this.autSrv.remove(author).subscribe({
+            next: () => {
+              this.alert.success('Removido com sucesso.');
+              this.fetch();
+            },
+            error: (err) => {
+              console.error('Erro ao remover.', err);
+              const msg = err?.error?.message;
+              this.alert.error(`Não foi possível remover. ${msg}`);
+              this.loading = false;
+            },
           });
-      }
-    });
+        }
+      });
   }
 
   edit(author: Author) {
-    this.dialog.open(AuthorsNewComponent, { data: author });
+    this.dialog
+      .open(AuthorsNewComponent, { data: author })
+      .afterClosed()
+      .subscribe(() => this.fetch());
+  }
+
+  new() {
+    const dialogRef = this.dialog
+      .open(AuthorsNewComponent)
+      .afterClosed()
+      .subscribe((aut) => {
+        if (aut) {
+          this.alert.success('Autor criado com sucesso');
+          this.fetch();
+        }
+      });
   }
 }

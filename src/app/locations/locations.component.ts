@@ -73,9 +73,11 @@ export class LocationsComponent implements OnInit {
     this.dialog
       .open(LocationsNewComponent)
       .afterClosed()
-      .subscribe(() => {
-        this.alert.success('Local criado com sucesso');
-        this.fetch();
+      .subscribe((loc) => {
+        if (loc) {
+          this.alert.success('Local criado com sucesso');
+          this.fetch();
+        }
       });
   }
 }

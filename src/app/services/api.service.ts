@@ -54,7 +54,7 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
       limit: pagination.pageSize,
       offset: pagination.pageSize * pagination.page,
     };
-    if (search && search != {}) {
+    if (search && Object.keys(search).length) {
       return { search, ...params };
     }
     return params;
@@ -82,6 +82,7 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
   fetch(pagination = new Pagination(), search?: any): Observable<void> {
     const url = this.url.fetch();
     const headers = this.authHeaders;
+    console.log(search);
     const params = this.getFecthParams(pagination, search);
     return this.http
       .get<PaginatedResponse<T_DTO>>(url, { headers, params })

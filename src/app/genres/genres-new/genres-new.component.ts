@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GenresService } from '../../services/genres.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Genre } from '../../models/genre';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-genres-new',
@@ -11,36 +12,40 @@ import { Genre } from '../../models/genre';
 })
 export class GenresNewComponent implements OnInit {
   genreForm!: FormGroup;
+  loading = false;
 
   constructor(
     private fb: FormBuilder,
-    private autSrv: GenresService,
+    private gnrSrv: GenresService,
     public dialogRef: MatDialogRef<GenresNewComponent>,
+    private snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public genre: Genre
   ) {}
 
   ngOnInit() {
     this.genreForm = this.fb.group({
-      description: [
-        this.genre ? this.genre.description : '',
-        Validators.required,
-      ],
+      description: [this.genre?.description ?? '', Validators.required],
     });
   }
 
   save() {
     if (this.genreForm?.valid) {
+      this.loading = true;
+
       let genre = new Genre();
-      genre.id = this.genre.id;
+      genre.uuid = this.genre?.uuid;
+      genre.ownerUuid = this.genre?.ownerUuid;
       genre.description = this.genreForm.get('description')?.value;
 
-      this.autSrv.save(genre).subscribe(
-        (aut) => {
-          genre = aut;
-          this.dialogRef.close(genre);
+      this.gnrSrv.save(genre).subscribe({
+        next: (gnr) => this.dialogRef.close(gnr),
+        error: (err) => {
+          console.error('Erro ao salvar gênero', err);
+          const msg = err?.error?.message ?? err?.error?.message;
+          this.snackBar.open(`Não foi possível salvar. ${msg}`, 'Ok');
+          this.loading = false;
         },
-        (err) => console.error('Erro ao salvar gênero', err)
-      );
+      });
     }
   }
 }
