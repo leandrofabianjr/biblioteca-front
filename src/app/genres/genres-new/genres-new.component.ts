@@ -4,6 +4,7 @@ import { GenresService } from '../../services/genres.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Genre } from '../../models/genre';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AlertService } from 'app/services/alert.service';
 
 @Component({
   selector: 'app-genres-new',
@@ -18,7 +19,7 @@ export class GenresNewComponent implements OnInit {
     private fb: FormBuilder,
     private gnrSrv: GenresService,
     public dialogRef: MatDialogRef<GenresNewComponent>,
-    private snackBar: MatSnackBar,
+    private alert: AlertService,
     @Inject(MAT_DIALOG_DATA) public genre: Genre
   ) {}
 
@@ -38,11 +39,14 @@ export class GenresNewComponent implements OnInit {
       genre.description = this.genreForm.get('description')?.value;
 
       this.gnrSrv.save(genre).subscribe({
-        next: (gnr) => this.dialogRef.close(gnr),
+        next: (gnr) => {
+          this.alert.success('Gênero criado com sucesso');
+          this.dialogRef.close(gnr);
+        },
         error: (err) => {
           console.error('Erro ao salvar gênero', err);
           const msg = err?.error?.message ?? err?.error?.message;
-          this.snackBar.open(`Não foi possível salvar. ${msg}`, 'Ok');
+          this.alert.error(`Não foi possível salvar. ${msg}`);
           this.loading = false;
         },
       });

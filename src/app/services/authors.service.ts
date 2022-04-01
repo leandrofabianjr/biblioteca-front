@@ -10,12 +10,12 @@ export interface IAuthorDTO extends IDto {
 @Injectable({
   providedIn: 'root',
 })
-export class AuthorsService extends ApiService<Author, IAuthorDTO> {
+export class AuthorsService extends ApiService<Author, IAuthorDTO, IAuthorDTO> {
   constructor(http: HttpClient) {
     super(http, 'authors');
   }
 
-  protected toDto(obj: Author): IAuthorDTO {
+  toDto(obj: Author): IAuthorDTO {
     return {
       uuid: obj.uuid!,
       ownerUuid: obj.ownerUuid!,
@@ -23,7 +23,7 @@ export class AuthorsService extends ApiService<Author, IAuthorDTO> {
     };
   }
 
-  protected toModel(dto: IAuthorDTO): Author {
+  toModel(dto: IAuthorDTO): Author {
     const obj = new Author();
     obj.uuid = dto.uuid;
     obj.ownerUuid = dto.ownerUuid;

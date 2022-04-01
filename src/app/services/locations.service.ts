@@ -10,12 +10,16 @@ export interface ILocationDTO extends IDto {
 @Injectable({
   providedIn: 'root',
 })
-export class LocationsService extends ApiService<Location, ILocationDTO> {
+export class LocationsService extends ApiService<
+  Location,
+  ILocationDTO,
+  ILocationDTO
+> {
   constructor(http: HttpClient) {
     super(http, 'locations');
   }
 
-  protected toDto(obj: Location): ILocationDTO {
+  toDto(obj: Location): ILocationDTO {
     return {
       uuid: obj.uuid,
       ownerUuid: obj.ownerUuid,
@@ -23,7 +27,7 @@ export class LocationsService extends ApiService<Location, ILocationDTO> {
     };
   }
 
-  protected toModel(dto: ILocationDTO): Location {
+  toModel(dto: ILocationDTO): Location {
     const obj = new Location();
     obj.uuid = dto.uuid;
     obj.ownerUuid = dto.ownerUuid;

@@ -1,9 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthorsService } from '../../services/authors.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AlertService } from 'app/services/alert.service';
 import { Author } from '../../models/author';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthorsService } from '../../services/authors.service';
 
 @Component({
   selector: 'app-authors-new',
@@ -18,7 +18,7 @@ export class AuthorsNewComponent implements OnInit {
     private fb: FormBuilder,
     private autSrv: AuthorsService,
     public dialogRef: MatDialogRef<AuthorsNewComponent>,
-    private snackBar: MatSnackBar,
+    private alert: AlertService,
     @Inject(MAT_DIALOG_DATA) public author: Author
   ) {}
 
@@ -38,11 +38,14 @@ export class AuthorsNewComponent implements OnInit {
       author.name = this.authorForm.get('name')?.value;
 
       this.autSrv.save(author).subscribe({
-        next: (aut) => this.dialogRef.close(aut),
+        next: (aut) => {
+          this.alert.success('Autor criado com sucesso');
+          this.dialogRef.close(aut);
+        },
         error: (err) => {
           console.error('Erro ao salvar autor', err);
           const msg = err?.error?.message ?? err?.error?.message;
-          this.snackBar.open(`Não foi possível salvar. ${msg}`, 'Ok');
+          this.alert.error(`Não foi possível salvar. ${msg}`);
           this.loading = false;
         },
       });

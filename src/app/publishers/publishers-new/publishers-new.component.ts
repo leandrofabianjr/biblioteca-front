@@ -4,6 +4,7 @@ import { PublishersService } from '../../services/publishers.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Publisher } from '../../models/publisher';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AlertService } from 'app/services/alert.service';
 
 @Component({
   selector: 'app-publishers-new',
@@ -18,7 +19,7 @@ export class PublishersNewComponent implements OnInit {
     private fb: FormBuilder,
     private autSrv: PublishersService,
     public dialogRef: MatDialogRef<PublishersNewComponent>,
-    private snackBar: MatSnackBar,
+    private alert: AlertService,
     @Inject(MAT_DIALOG_DATA) public publisher: Publisher
   ) {}
 
@@ -38,11 +39,14 @@ export class PublishersNewComponent implements OnInit {
       publisher.name = this.publisherForm.get('name')?.value;
 
       this.autSrv.save(publisher).subscribe({
-        next: (aut) => this.dialogRef.close(aut),
+        next: (pub) => {
+          this.alert.success('Editora criada com sucesso');
+          this.dialogRef.close(pub);
+        },
         error: (err) => {
           console.error('Erro ao salvar editora', err);
           const msg = err?.error?.message ?? err?.error?.message;
-          this.snackBar.open(`Não foi possível salvar. ${msg}`, 'Ok');
+          this.alert.error(`Não foi possível salvar. ${msg}`);
           this.loading = false;
         },
       });

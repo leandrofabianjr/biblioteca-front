@@ -10,12 +10,12 @@ export interface IGenreDTO extends IDto {
 @Injectable({
   providedIn: 'root',
 })
-export class GenresService extends ApiService<Genre, IGenreDTO> {
+export class GenresService extends ApiService<Genre, IGenreDTO, IGenreDTO> {
   constructor(http: HttpClient) {
     super(http, 'genres');
   }
 
-  protected toDto(obj: Genre): IGenreDTO {
+  toDto(obj: Genre): IGenreDTO {
     return {
       uuid: obj.uuid,
       ownerUuid: obj.ownerUuid,
@@ -23,7 +23,7 @@ export class GenresService extends ApiService<Genre, IGenreDTO> {
     };
   }
 
-  protected toModel(dto: IGenreDTO): Genre {
+  toModel(dto: IGenreDTO): Genre {
     const obj = new Genre();
     obj.uuid = dto.uuid;
     obj.ownerUuid = dto.ownerUuid;

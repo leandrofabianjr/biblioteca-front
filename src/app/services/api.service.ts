@@ -10,11 +10,15 @@ import { PaginatedResponse } from './paginated-response.interface';
 const API_URL_BASE = environment.apiUrlBase;
 
 export interface IDto {
-  uuid: string;
-  ownerUuid: string;
+  uuid?: string;
+  ownerUuid?: string;
 }
 
-export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
+export abstract class ApiService<
+  T extends IModel,
+  T_DTO extends IDto,
+  T_FETCH_DTO extends IDto
+> {
   readonly url = {
     authUserData: () => `auth/userdata`,
     get: (uuid: string) => `${API_URL_BASE}/${this.endpoint}/${uuid}`,
@@ -35,7 +39,7 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
   }
 
   private paginatedResponseToPaginatedData(
-    res: PaginatedResponse<T_DTO>
+    res: PaginatedResponse<T_FETCH_DTO>
   ): PaginatedData<T> {
     const paginatedData = new PaginatedData<T>();
     paginatedData.data = res.data?.map((dto) => this.toModel(dto));
@@ -60,8 +64,8 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
     return params;
   }
 
-  protected abstract toModel(dto: T_DTO): T;
-  protected abstract toDto(obj: T): T_DTO;
+  abstract toModel(dto: T_FETCH_DTO): T;
+  abstract toDto(obj: T): T_DTO;
 
   get data(): Observable<PaginatedData<T>> {
     return this.$data.asObservable();
@@ -79,17 +83,19 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
     return this.http.get<T>(url, { headers });
   }
 
-  fetch(pagination = new Pagination(), search?: any): Observable<void> {
+  fetch(pagination = new Pagination(), search?: any): Observable<T[]> {
     const url = this.url.fetch();
     const headers = this.authHeaders;
     console.log(search);
     const params = this.getFecthParams(pagination, search);
     return this.http
-      .get<PaginatedResponse<T_DTO>>(url, { headers, params })
+      .get<PaginatedResponse<T_FETCH_DTO>>(url, { headers, params })
       .pipe(
-        map((res) =>
-          this.$data.next(this.paginatedResponseToPaginatedData(res))
-        )
+        map((res) => {
+          const pagData = this.paginatedResponseToPaginatedData(res);
+          this.$data.next(pagData);
+          return pagData.data;
+        })
       );
   }
 
@@ -100,7 +106,7 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
     console.log(dto);
     const headers = this.authHeaders;
     return this.http
-      .post<T_DTO>(url, dto, { headers })
+      .post<T_FETCH_DTO>(url, dto, { headers })
       .pipe(map((dto) => this.toModel(dto)));
   }
 
@@ -110,7 +116,7 @@ export abstract class ApiService<T extends IModel, T_DTO extends IDto> {
     console.log(dto);
     const headers = this.authHeaders;
     return this.http
-      .put<T_DTO>(url, dto, { headers })
+      .put<T_FETCH_DTO>(url, dto, { headers })
       .pipe(map((dto) => this.toModel(dto)));
   }
 

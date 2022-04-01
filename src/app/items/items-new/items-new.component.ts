@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemsService } from '../../services/items.service';
@@ -19,14 +19,16 @@ import { GenresNewComponent } from '../../genres/genres-new/genres-new.component
 import { LocationsNewComponent } from '../../locations/locations-new/locations-new.component';
 import { BookOnlineSearchComponent } from '../../book-online-search/book-online-search.component';
 import { GoogleBook } from '../../services/google-books.service';
+import { Pagination } from 'app/services/paginated-data';
+import { AlertService } from 'app/services/alert.service';
 
 @Component({
   selector: 'app-items-new',
   templateUrl: './items-new.component.html',
   styleUrls: ['./items-new.component.scss'],
 })
-export class ItemsNewComponent {
-  itemId!: string;
+export class ItemsNewComponent implements OnInit {
+  itemUuid!: string;
   itemForm!: FormGroup;
   authors!: Author[];
   publishers!: Publisher[];
@@ -42,9 +44,11 @@ export class ItemsNewComponent {
     private pubSrv: PublishersService,
     private gnrSrv: GenresService,
     private locSrv: LocationsService,
-    private snackBar: MatSnackBar,
+    private alert: AlertService,
     public dialog: MatDialog
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.route.params.subscribe((params) => {
       const id = params['id'];
       if (!id) {
@@ -53,7 +57,7 @@ export class ItemsNewComponent {
 
       this.itmSrv.get(id).subscribe({
         next: (itm) => {
-          this.itemId = id;
+          this.itemUuid = id;
           this.buildForm(itm);
         },
         error: () => {
@@ -66,15 +70,12 @@ export class ItemsNewComponent {
 
   private buildForm(item?: Item) {
     this.itemForm = this.fb.group({
-      description: [item ? item.description : null, Validators.required],
-      authors: [item ? item.authors : null, Validators.required],
-      publishers: [item ? item.publishers : null, Validators.required],
-      year: [
-        item ? item.year : null,
-        [Validators.required, Validators.pattern('[0-9]*')],
-      ],
-      genres: [item ? item.genres : null, Validators.required],
-      location: [item ? item.location : null, Validators.required],
+      description: [item?.description, Validators.required],
+      authors: [item?.authors, Validators.required],
+      publishers: [item?.publishers, Validators.required],
+      year: [item?.year, [Validators.required, Validators.pattern('[0-9]*')]],
+      genres: [item?.genres, Validators.required],
+      location: [item?.location, Validators.required],
     });
   }
 
@@ -82,97 +83,91 @@ export class ItemsNewComponent {
     console.log('save');
     if (this.itemForm?.valid) {
       const item = new Item();
-      item.id = this.itemId;
+      item.uuid = this.itemUuid;
       item.description = this.itemForm.get('description')?.value;
       item.authors = this.itemForm.get('authors')?.value;
       item.genres = this.itemForm.get('genres')?.value;
       item.publishers = this.itemForm.get('publishers')?.value;
       item.location = this.itemForm.get('location')?.value;
       item.year = this.itemForm.get('year')?.value;
-
-      this.itmSrv.save(item).subscribe(
-        (itm) => {
-          this.snackBar.open('Item salvo com sucesso!', 'Ok', {
-            duration: 3000,
-          });
-
+      console.log(item);
+      this.itmSrv.save(item).subscribe({
+        next: (itm) => {
+          this.alert.success('Item salvo com sucesso.');
           this.itemForm?.reset();
           this.router.navigate(['u', 'items', 'new']);
         },
-        (err) => {
+        error: (err) => {
           console.error('Erro ao salvar item', err);
-          this.snackBar.open('Ops, o item não pode ser cadastrado :(', 'Ok', {
-            duration: 3000,
-          });
-        }
-      );
+          this.alert.error(`Ops, o item não pôde ser cadastrado.`);
+        },
+      });
     }
   }
 
-  newAuthor() {
-    const dialogRef = this.dialog.open(AuthorsNewComponent);
+  newResource(type: 'publishers' | 'authors' | 'genres' | 'location') {
+    let dialogRef;
+    switch (type) {
+      case 'publishers':
+        dialogRef = this.dialog.open(PublishersNewComponent);
+        break;
+      case 'authors':
+        dialogRef = this.dialog.open(AuthorsNewComponent);
+        break;
+      case 'genres':
+        dialogRef = this.dialog.open(GenresNewComponent);
+        break;
+      default:
+        dialogRef = this.dialog.open(LocationsNewComponent);
+        break;
+    }
 
-    dialogRef.afterClosed().subscribe((result: Author) => {
-      if (result) {
-        this.itemForm
-          ?.get('authors')
-          ?.setValue(
-            (this.itemForm?.get('authors')?.value || []).concat(result)
-          );
-      }
+    dialogRef.afterClosed().subscribe((obj) => {
+      if (!obj) return;
+
+      const value =
+        type == 'location'
+          ? obj
+          : (this.itemForm.get(type)?.value || []).concat(obj);
+
+      this.itemForm?.get(type)?.setValue(value);
     });
   }
 
-  newPublisher() {
-    const dialogRef = this.dialog.open(PublishersNewComponent);
-
-    dialogRef.afterClosed().subscribe((result: Publisher) => {
-      if (result) {
-        this.itemForm
-          ?.get('publishers')
-          ?.setValue(
-            (this.itemForm.get('publishers')?.value || []).concat(result)
-          );
-      }
+  searchAuthors(name: string) {
+    this.autSrv.fetch(new Pagination(), { name }).subscribe({
+      next: (objs) => (this.authors = objs),
+      error: (err) => {
+        console.error(err), this.alert.error(`Não foi possível buscar`);
+      },
     });
   }
 
-  newGenre() {
-    const dialogRef = this.dialog.open(GenresNewComponent);
-
-    dialogRef.afterClosed().subscribe((result: Genre) => {
-      if (result) {
-        this.itemForm
-          ?.get('genres')
-          ?.setValue((this.itemForm.get('genres')?.value || []).concat(result));
-      }
+  searchPublishers(name: string) {
+    this.pubSrv.fetch(new Pagination(), { name }).subscribe({
+      next: (objs) => (this.publishers = objs),
+      error: (err) => {
+        console.error(err), this.alert.error(`Não foi possível buscar`);
+      },
     });
   }
 
-  newLocation() {
-    const dialogRef = this.dialog.open(LocationsNewComponent);
-
-    dialogRef.afterClosed().subscribe((result: Location) => {
-      if (result) {
-        this.itemForm?.get('location')?.setValue(result);
-      }
+  searchGenres(description: string) {
+    this.gnrSrv.fetch(new Pagination(), { description }).subscribe({
+      next: (objs) => (this.genres = objs),
+      error: (err) => {
+        console.error(err), this.alert.error(`Não foi possível buscar`);
+      },
     });
   }
 
-  searchAuthors(term: string) {
-    // TODO
-  }
-
-  searchPublishers(term: string) {
-    // TODO
-  }
-
-  searchGenres(term: string) {
-    // TODO
-  }
-
-  searchLocations(term: string) {
-    // TODO
+  searchLocations(description: string) {
+    this.locSrv.fetch(new Pagination(), { description }).subscribe({
+      next: (objs) => (this.locations = objs),
+      error: (err) => {
+        console.error(err), this.alert.error(`Não foi possível buscar`);
+      },
+    });
   }
 
   onlineSearch() {

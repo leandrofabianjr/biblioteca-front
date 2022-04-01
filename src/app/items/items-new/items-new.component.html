@@ -2,7 +2,7 @@
 
 <mat-card *ngIf="itemForm">
   <mat-card-header class="title-header">
-    <mat-card-title>{{ itemId ? 'Editar' : 'Novo' }} item</mat-card-title>
+    <mat-card-title>{{ itemUuid ? 'Editar' : 'Novo' }} item</mat-card-title>
     <button mat-button (click)="onlineSearch()" color="accent">Procurar online</button>
   </mat-card-header>
 
@@ -35,7 +35,7 @@
         [control]="itemForm.controls['authors']"
         [container]="false"
       ></app-info-erro-campo>
-      <button mat-button (click)="newAuthor()" color="accent">Não encontrou o autor?</button>
+      <button mat-button (click)="newResource('authors')" color="accent">Não encontrou o autor?</button>
 
       <ng-select
         id="publishers"
@@ -51,7 +51,7 @@
         [control]="itemForm.controls['publishers']"
         [container]="false"
       ></app-info-erro-campo>
-      <button mat-button (click)="newPublisher()" color="accent">Não encontrou a editora?</button>
+      <button mat-button (click)="newResource('publishers')" color="accent">Não encontrou a editora?</button>
 
       <ng-select
         id="genres"
@@ -67,7 +67,7 @@
         [control]="itemForm.controls['genres']"
         [container]="false"
       ></app-info-erro-campo>
-      <button mat-button (click)="newGenre()" color="accent">Não encontrou o gênero?</button>
+      <button mat-button (click)="newResource('genres')" color="accent">Não encontrou o gênero?</button>
 
       <mat-form-field>
         <input
@@ -96,7 +96,7 @@
         [control]="itemForm.controls['location']"
         [container]="false"
       ></app-info-erro-campo>
-      <button mat-button (click)="newLocation()" color="accent">Não encontrou o local?</button>
+      <button mat-button (click)="newResource('location')" color="accent">Não encontrou o local?</button>
     </form>
 
   </mat-card-content>

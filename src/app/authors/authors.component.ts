@@ -71,14 +71,11 @@ export class AuthorsComponent implements OnInit {
   }
 
   new() {
-    const dialogRef = this.dialog
+    this.dialog
       .open(AuthorsNewComponent)
       .afterClosed()
       .subscribe((aut) => {
-        if (aut) {
-          this.alert.success('Autor criado com sucesso');
-          this.fetch();
-        }
+        if (aut) this.fetch();
       });
   }
 }
