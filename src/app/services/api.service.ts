@@ -53,13 +53,16 @@ export abstract class ApiService<
     return paginatedData;
   }
 
-  private getFecthParams(pagination: Pagination, search?: any) {
+  private getFecthParams(pagination: Pagination, search?: any, sort?: string) {
     let params = {
       limit: pagination.pageSize,
       offset: pagination.pageSize * pagination.page,
     };
     if (search && Object.keys(search).length) {
       return { search: JSON.stringify(search), ...params };
+    }
+    if (sort) {
+      return { sort: sort, ...params };
     }
     return params;
   }
@@ -83,16 +86,21 @@ export abstract class ApiService<
     return this.http.get<T>(url, { headers });
   }
 
-  fetch(pagination = new Pagination(), search?: any): Observable<T[]> {
+  fetch(
+    pagination = new Pagination(),
+    search?: any,
+    sort?: string
+  ): Observable<T[]> {
     const url = this.url.fetch();
     const headers = this.authHeaders;
     console.log(search);
-    const params = this.getFecthParams(pagination, search);
+    const params = this.getFecthParams(pagination, search, sort);
     return this.http
       .get<PaginatedResponse<T_FETCH_DTO>>(url, { headers, params })
       .pipe(
         map((res) => {
           const pagData = this.paginatedResponseToPaginatedData(res);
+          console.log('aaa');
           this.$data.next(pagData);
           return pagData.data;
         })
