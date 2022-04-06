@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Location } from '../models/location';
 import { HttpClient } from '@angular/common/http';
-import { ApiService, IDto } from './api.service';
+import { RestService, IDto } from './rest.service';
 
 export interface ILocationDTO extends IDto {
   description?: string;
@@ -10,7 +10,7 @@ export interface ILocationDTO extends IDto {
 @Injectable({
   providedIn: 'root',
 })
-export class LocationsService extends ApiService<
+export class LocationsService extends RestService<
   Location,
   ILocationDTO,
   ILocationDTO

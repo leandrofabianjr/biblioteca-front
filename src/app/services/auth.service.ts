@@ -1,9 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { map } from 'rxjs/operators';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ApiAccess } from 'app/api-access';
 import { User } from 'app/models/user';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 const UserData = {
   exists: () => localStorage.getItem('user') != null,
@@ -48,10 +49,8 @@ export class AuthService {
   }
 
   loginWithJwt(jwt: any): Observable<void> {
-    const url = 'http://localhost:3000/auth/userdata';
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${jwt}`,
-    });
+    const url = ApiAccess.getUrl().authUserData();
+    const headers = ApiAccess.getAuthHeaders(jwt);
     return this.http
       .get(url, { headers })
       .pipe(map((data) => UserData.set(data)));

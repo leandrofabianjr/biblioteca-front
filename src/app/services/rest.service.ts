@@ -1,42 +1,23 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { ApiAccess } from 'app/api-access';
 import { IModel } from 'app/models/model.interface';
-import { environment } from 'environments/environment';
-
 import { BehaviorSubject, map, Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 import { PaginatedData, Pagination } from './paginated-data';
 import { PaginatedResponse } from './paginated-response.interface';
-
-const API_URL_BASE = environment.apiUrlBase;
 
 export interface IDto {
   uuid?: string;
   ownerUuid?: string;
 }
 
-export abstract class ApiService<
+export abstract class RestService<
   T extends IModel,
   T_DTO extends IDto,
   T_FETCH_DTO extends IDto
 > {
-  readonly url = {
-    authUserData: () => `auth/userdata`,
-    get: (uuid: string) => `${API_URL_BASE}/${this.endpoint}/${uuid}`,
-    fetch: () => `${API_URL_BASE}/${this.endpoint}`,
-    create: () => `${API_URL_BASE}/${this.endpoint}`,
-    update: (uuid: string) => `${API_URL_BASE}/${this.endpoint}/${uuid}`,
-    remove: (uuid: string) => `${API_URL_BASE}/${this.endpoint}/${uuid}`,
-  };
-
   private $data = new BehaviorSubject<PaginatedData<T>>(new PaginatedData<T>());
 
   constructor(private http: HttpClient, readonly endpoint: string) {}
-
-  private get authHeaders() {
-    return new HttpHeaders({
-      Authorization: `Bearer ${AuthService.token}`,
-    });
-  }
 
   private paginatedResponseToPaginatedData(
     res: PaginatedResponse<T_FETCH_DTO>
@@ -74,15 +55,9 @@ export abstract class ApiService<
     return this.$data.asObservable();
   }
 
-  getLoginUserData() {
-    const url = this.url.authUserData();
-    const headers = this.authHeaders;
-    return this.http.get<T>(url, { headers });
-  }
-
   get(uuid: string): Observable<T> {
-    const url = this.url.get(uuid);
-    const headers = this.authHeaders;
+    const url = ApiAccess.getUrl(this.endpoint).get(uuid);
+    const headers = ApiAccess.getAuthHeaders();
     return this.http.get<T>(url, { headers });
   }
 
@@ -91,8 +66,8 @@ export abstract class ApiService<
     search?: any,
     sort?: string
   ): Observable<T[]> {
-    const url = this.url.fetch();
-    const headers = this.authHeaders;
+    const url = ApiAccess.getUrl(this.endpoint).fetch();
+    const headers = ApiAccess.getAuthHeaders();
     console.log(search);
     const params = this.getFecthParams(pagination, search, sort);
     return this.http
@@ -109,20 +84,20 @@ export abstract class ApiService<
 
   create(obj: T): Observable<T> {
     console.log('criando');
-    const url = this.url.create();
+    const url = ApiAccess.getUrl(this.endpoint).create();
     const dto = this.toDto(obj);
     console.log(dto);
-    const headers = this.authHeaders;
+    const headers = ApiAccess.getAuthHeaders();
     return this.http
       .post<T_FETCH_DTO>(url, dto, { headers })
       .pipe(map((dto) => this.toModel(dto)));
   }
 
   update(obj: T): Observable<T> {
-    const url = this.url.update(obj.uuid!);
+    const url = ApiAccess.getUrl(this.endpoint).update(obj.uuid!);
     const dto = this.toDto(obj);
     console.log(dto);
-    const headers = this.authHeaders;
+    const headers = ApiAccess.getAuthHeaders();
     return this.http
       .put<T_FETCH_DTO>(url, dto, { headers })
       .pipe(map((dto) => this.toModel(dto)));
@@ -133,8 +108,8 @@ export abstract class ApiService<
   }
 
   remove(obj: T): Observable<void> {
-    const url = this.url.remove(obj.uuid!);
-    const headers = this.authHeaders;
+    const url = ApiAccess.getUrl(this.endpoint).remove(obj.uuid!);
+    const headers = ApiAccess.getAuthHeaders();
     return this.http.delete(url, { headers }).pipe(map(() => undefined));
   }
 }

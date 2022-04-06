@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Publisher } from '../models/publisher';
-import { ApiService, IDto } from './api.service';
+import { RestService, IDto } from './rest.service';
 
 export interface IPublisherDTO extends IDto {
   name?: string;
@@ -10,7 +10,7 @@ export interface IPublisherDTO extends IDto {
 @Injectable({
   providedIn: 'root',
 })
-export class PublishersService extends ApiService<
+export class PublishersService extends RestService<
   Publisher,
   IPublisherDTO,
   IPublisherDTO

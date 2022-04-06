@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ApiAccess } from 'app/api-access';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -10,6 +11,7 @@ import { AuthService } from '../services/auth.service';
 export class LoginComponent {
   loading = true;
   loginError = false;
+  googleLoginUrl = ApiAccess.getUrl().googleLogin();
 
   constructor(
     private auth: AuthService,

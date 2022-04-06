@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Author } from '../models/author';
-import { ApiService, IDto } from './api.service';
+import { RestService, IDto } from './rest.service';
 
 export interface IAuthorDTO extends IDto {
   name?: string;
@@ -10,7 +10,11 @@ export interface IAuthorDTO extends IDto {
 @Injectable({
   providedIn: 'root',
 })
-export class AuthorsService extends ApiService<Author, IAuthorDTO, IAuthorDTO> {
+export class AuthorsService extends RestService<
+  Author,
+  IAuthorDTO,
+  IAuthorDTO
+> {
   constructor(http: HttpClient) {
     super(http, 'authors');
   }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Item } from '../models/item';
-import { ApiService, IDto } from './api.service';
+import { RestService, IDto } from './rest.service';
 import { AuthorsService, IAuthorDTO } from './authors.service';
 import { GenresService, IGenreDTO } from './genres.service';
 import { ILocationDTO, LocationsService } from './locations.service';
@@ -28,7 +28,7 @@ export interface IFetchItemDTO extends IDto {
 @Injectable({
   providedIn: 'root',
 })
-export class ItemsService extends ApiService<Item, IItemDTO, IFetchItemDTO> {
+export class ItemsService extends RestService<Item, IItemDTO, IFetchItemDTO> {
   constructor(
     http: HttpClient,
     private locSrv: LocationsService,

@@ -6,7 +6,7 @@
   <mat-card class="card">
     <p>Faça login com uma de suas contas:</p>
     <span *ngIf="loading" class="btn-login">Carregando...</span>
-    <a *ngIf="!loading" mat-raised-button color="warn" class="btn-login" href="http://localhost:3000/auth/google">Google</a>
+    <a *ngIf="!loading" mat-raised-button color="warn" class="btn-login" [href]="googleLoginUrl">Google</a>
     <p *ngIf="loginError" class="error-text">Desculpe!<br> Não foi possível completar o login</p>
   </mat-card>
 </div>

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Genre } from '../models/genre';
-import { ApiService, IDto } from './api.service';
+import { RestService, IDto } from './rest.service';
 
 export interface IGenreDTO extends IDto {
   description?: string;
@@ -10,7 +10,7 @@ export interface IGenreDTO extends IDto {
 @Injectable({
   providedIn: 'root',
 })
-export class GenresService extends ApiService<Genre, IGenreDTO, IGenreDTO> {
+export class GenresService extends RestService<Genre, IGenreDTO, IGenreDTO> {
   constructor(http: HttpClient) {
     super(http, 'genres');
   }
