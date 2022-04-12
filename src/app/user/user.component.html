@@ -1,22 +1,24 @@
-<!--<ng-adsense></ng-adsense>-->
-
-<div class="container">
+<div *ngIf="loading" class="loading">
+  <p>Carregando seus dados...</p>
+  <mat-spinner class="spinner" diameter="50" mode="indeterminate"></mat-spinner>
+</div>
+<div *ngIf="!loading" class="container">
 
   <div class="avatar mat-elevation-z3">
-    <img [src]="user.photoUrl" [alt]="user.name">
+    <img [src]="userPhoto" onerror="this.src='/assets/icon.png'" [alt]="user.name">
   </div>
 
   <div class="name">
-  <h1>{{ user.name }}</h1>
-  <p>{{ user.email }}</p>
+    <h1>{{ user.name }}</h1>
+    <p>{{ user.email }}</p>
   </div>
 
   <div class="card mat-elevation-z3">
     <h2>Estatísticas</h2>
-    <!-- <p>Items: <strong>{{ stats?.items?.count }}</strong></p>
-    <p>Autores: <strong>{{ stats?.authors?.count }}</strong></p>
-    <p>Gêneros: <strong>{{ stats?.genres?.count }}</strong></p>
-    <p>Editoras: <strong>{{ stats?.publishers?.count }}</strong></p>
-    <p>Locais: <strong>{{ stats?.locations?.count }}</strong></p> -->
+    <p>Items: <strong>{{ stats.items }}</strong></p>
+    <p>Autores: <strong>{{ stats.authors }}</strong></p>
+    <p>Gêneros: <strong>{{ stats.genres }}</strong></p>
+    <p>Editoras: <strong>{{ stats.publishers }}</strong></p>
+    <p>Locais: <strong>{{ stats.locations }}</strong></p>
   </div>
 </div>
