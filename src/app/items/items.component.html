@@ -3,7 +3,7 @@
 <h2>Itens</h2>
 
 <app-filter-field [searchableFields]="searchableFields" [selectedField]="searchColumn" [term]="searchTerm"
-  (searchChange)="search($event.term, $event.field)"></app-filter-field>
+  (searchChange)="search($event.field, $event.term)"></app-filter-field>
 
 <div class="list-container">
   <mat-accordion multi>

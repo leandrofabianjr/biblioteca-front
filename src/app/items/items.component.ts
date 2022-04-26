@@ -50,7 +50,7 @@ export class ItemsComponent implements OnInit {
     this.fetch();
   }
 
-  search(term?: string, column?: string) {
+  search(column?: string, term?: string) {
     this.searchTerm = term;
     if (column) {
       this.searchColumn = column;
