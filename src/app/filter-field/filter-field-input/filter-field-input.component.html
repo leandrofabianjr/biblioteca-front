@@ -1,0 +1,6 @@
+<mat-form-field class="form-field" appearance="outline" (mouseover)="isMouseOver = true" (mouseout)="isMouseOver = false">
+  <mat-icon matPrefix>search</mat-icon>
+  <input matInput (appRealTimeSearch)="termChange($event)" [(ngModel)]="value">
+  <mat-icon *ngIf="!isMouseOver" matSuffix></mat-icon>
+  <mat-icon *ngIf="isMouseOver" class="pointable-icon" matSuffix (click)="clean()">backspace</mat-icon>
+</mat-form-field>

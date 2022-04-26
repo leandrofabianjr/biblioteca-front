@@ -1,0 +1,11 @@
+<div fxLayout="row wrap" fxLayoutGap="16px">
+  <app-filter-field-input fxFlex class="filter-input" [(value)]="term" (valueChange)="onTermChange($event)">
+  </app-filter-field-input>
+
+  <mat-form-field class="filter-select" appearance="outline">
+    <mat-label>Pesquisar em</mat-label>
+    <mat-select [(ngModel)]="selectedField" (valueChange)="onFieldChange($event)">
+      <mat-option *ngFor="let field of searchableFields" value="{{ field.name }}">{{ field.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>

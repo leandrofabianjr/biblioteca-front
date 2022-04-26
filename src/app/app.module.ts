@@ -1,12 +1,14 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -51,6 +53,8 @@ import { PublishersNewComponent } from './publishers/publishers-new/publishers-n
 import { PublishersComponent } from './publishers/publishers.component';
 import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.component';
 import { UserComponent } from './user/user.component';
+import { FilterFieldComponent } from './filter-field/filter-field.component';
+import { FilterFieldInputComponent } from './filter-field/filter-field-input/filter-field-input.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +80,8 @@ import { UserComponent } from './user/user.component';
     DialogInfoComponent,
     BookOnlineSearchComponent,
     PaginatorComponent,
+    FilterFieldComponent,
+    FilterFieldInputComponent,
   ],
   imports: [
     BrowserModule,
@@ -99,6 +105,7 @@ import { UserComponent } from './user/user.component';
     MatSnackBarModule,
     MatAutocompleteModule,
     MatTooltipModule,
+    MatExpansionModule,
     ReactiveFormsModule,
     NgSelectModule,
     A11yModule,
@@ -108,6 +115,7 @@ import { UserComponent } from './user/user.component';
     //   adSlot: 7259870550,
     // }),
     FormsModule,
+    FlexLayoutModule,
   ],
   providers: [
     {

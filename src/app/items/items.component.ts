@@ -1,22 +1,20 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ItemsService } from '../services/items.service';
-import { Item } from '../models/item';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, Sort } from '@angular/material/sort';
-import { Author } from '../models/author';
+import { Sort } from '@angular/material/sort';
+import { FilterFieldSearchableField } from 'app/filter-field/filter-field.component';
+import { AlertService } from 'app/services/alert.service';
+import { PaginatedData, Pagination } from 'app/services/paginated-data';
 import { AuthorsNewComponent } from '../authors/authors-new/authors-new.component';
-import { Genre } from '../models/genre';
+import { DialogConfirmationComponent } from '../dialog-confirmation/dialog-confirmation.component';
 import { GenresNewComponent } from '../genres/genres-new/genres-new.component';
-import { Location } from '../models/location';
 import { LocationsNewComponent } from '../locations/locations-new/locations-new.component';
+import { Author } from '../models/author';
+import { Genre } from '../models/genre';
+import { Item } from '../models/item';
+import { Location } from '../models/location';
 import { Publisher } from '../models/publisher';
 import { PublishersNewComponent } from '../publishers/publishers-new/publishers-new.component';
-import { DialogConfirmationComponent } from '../dialog-confirmation/dialog-confirmation.component';
-import { PaginatedData, Pagination } from 'app/services/paginated-data';
-import { AlertService } from 'app/services/alert.service';
-
+import { ItemsService } from '../services/items.service';
 @Component({
   selector: 'app-items',
   templateUrl: './items.component.html',
@@ -24,18 +22,19 @@ import { AlertService } from 'app/services/alert.service';
 })
 export class ItemsComponent implements OnInit {
   loading = true;
-  displayedColumns = [
-    'description',
-    'authors',
-    'genres',
-    'year',
-    'publishers',
-    'location',
-  ];
-  paginatedData!: PaginatedData<Author>;
-  searchQuery: any = {};
+  paginatedData!: PaginatedData<Item>;
   sortQuery?: string;
   pagination?: Pagination;
+  searchableFields: FilterFieldSearchableField[] = [
+    { name: 'description', label: 'Descrição' },
+    { name: 'authors', label: 'Autor' },
+    { name: 'genres', label: 'Gênero' },
+    { name: 'year', label: 'Ano' },
+    { name: 'publishers', label: 'Editora' },
+    { name: 'location', label: 'Local' },
+  ];
+  searchTerm?: string;
+  searchColumn?: string;
 
   constructor(
     private itmSrv: ItemsService,
@@ -51,9 +50,22 @@ export class ItemsComponent implements OnInit {
     this.fetch();
   }
 
+  search(term?: string, column?: string) {
+    this.searchTerm = term;
+    if (column) {
+      this.searchColumn = column;
+    }
+    this.fetch();
+  }
+
   fetch() {
+    console.log(this.searchColumn, this.searchTerm);
+    this.loading = true;
+    const search = this.searchColumn
+      ? { [this.searchColumn]: this.searchTerm }
+      : undefined;
     this.itmSrv
-      .fetch(this.pagination, this.searchQuery, this.sortQuery)
+      .fetch(this.pagination, search, this.sortQuery)
       .subscribe(() => undefined);
   }
 
@@ -62,17 +74,8 @@ export class ItemsComponent implements OnInit {
     this.fetch();
   }
 
-  getSearchQuery(column: string): string {
-    return this.searchQuery?.[column] ?? '';
-  }
-
   editAuthor(author: Author) {
     this.dialog.open(AuthorsNewComponent, { data: author });
-  }
-
-  search(column: string, term: string) {
-    this.searchQuery = { ...this.searchQuery, [column]: term };
-    this.fetch();
   }
 
   editGenre(genre: Genre) {
