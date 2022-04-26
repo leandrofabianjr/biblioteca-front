@@ -6,8 +6,8 @@ import { PaginatedData, Pagination } from './paginated-data';
 import { PaginatedResponse } from './paginated-response.interface';
 
 export interface IDto {
-  uuid?: string;
-  ownerUuid?: string;
+  uuid: string;
+  ownerUuid: string;
 }
 
 export abstract class RestService<

@@ -8,12 +8,12 @@ import { ILocationDTO, LocationsService } from './locations.service';
 import { IPublisherDTO, PublishersService } from './publishers.service';
 
 export interface IItemDTO extends IDto {
-  description?: string;
-  year?: number;
-  location?: any;
-  authors?: string[];
-  genres?: string[];
-  publishers?: string[];
+  description: string;
+  year: number;
+  location: any;
+  authors: string[];
+  genres: string[];
+  publishers: string[];
 }
 
 export interface IFetchItemDTO extends IDto {

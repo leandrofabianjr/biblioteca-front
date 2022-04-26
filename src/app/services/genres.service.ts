@@ -4,7 +4,7 @@ import { Genre } from '../models/genre';
 import { RestService, IDto } from './rest.service';
 
 export interface IGenreDTO extends IDto {
-  description?: string;
+  description: string;
 }
 
 @Injectable({

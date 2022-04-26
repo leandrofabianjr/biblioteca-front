@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { RestService, IDto } from './rest.service';
 
 export interface ILocationDTO extends IDto {
-  description?: string;
+  description: string;
 }
 
 @Injectable({

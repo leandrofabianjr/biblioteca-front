@@ -4,7 +4,7 @@ import { Publisher } from '../models/publisher';
 import { RestService, IDto } from './rest.service';
 
 export interface IPublisherDTO extends IDto {
-  name?: string;
+  name: string;
 }
 
 @Injectable({

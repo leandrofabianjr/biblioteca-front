@@ -4,7 +4,7 @@ import { Author } from '../models/author';
 import { RestService, IDto } from './rest.service';
 
 export interface IAuthorDTO extends IDto {
-  name?: string;
+  name: string;
 }
 
 @Injectable({
