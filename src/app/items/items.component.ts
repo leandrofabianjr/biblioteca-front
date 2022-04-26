@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
-import { FilterFieldSearchableField } from 'app/filter-field/filter-field.component';
+import {
+  FilterFieldChangeEvent,
+  FilterFieldSearchableField,
+} from 'app/filter-field/filter-field.component';
 import { AlertService } from 'app/services/alert.service';
 import { PaginatedData, Pagination } from 'app/services/paginated-data';
 import { AuthorsNewComponent } from '../authors/authors-new/authors-new.component';
@@ -50,10 +53,10 @@ export class ItemsComponent implements OnInit {
     this.fetch();
   }
 
-  search(column?: string, term?: string) {
-    this.searchTerm = term;
-    if (column) {
-      this.searchColumn = column;
+  search(e: FilterFieldChangeEvent) {
+    this.searchTerm = e.term;
+    if (e.field) {
+      this.searchColumn = e.field;
     }
     this.fetch();
   }

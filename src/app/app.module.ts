@@ -55,6 +55,7 @@ import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.
 import { UserComponent } from './user/user.component';
 import { FilterFieldComponent } from './filter-field/filter-field.component';
 import { FilterFieldInputComponent } from './filter-field/filter-field-input/filter-field-input.component';
+import { ItemExpansionPanelComponent } from './items/item-expansion-panel/item-expansion-panel.component';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import { FilterFieldInputComponent } from './filter-field/filter-field-input/fil
     PaginatorComponent,
     FilterFieldComponent,
     FilterFieldInputComponent,
+    ItemExpansionPanelComponent,
   ],
   imports: [
     BrowserModule,
