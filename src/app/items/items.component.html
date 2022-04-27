@@ -1,9 +1,21 @@
 <!--<ng-adsense></ng-adsense>-->
 
-<h2>Itens</h2>
+<div fxLayout="row" fxLayoutAlign="space-between">
+  <h2>Itens</h2>
+</div>
 
 <app-filter-field [searchableFields]="searchableFields" [selectedField]="searchColumn" [term]="searchTerm"
   (searchChange)="search($event)"></app-filter-field>
+
+<mat-form-field appearance="outline">
+  <mat-icon matPrefix>sort</mat-icon>
+  <mat-label>Ordenar por</mat-label>
+  <mat-select [(ngModel)]="sort.active" (valueChange)="sortChange($event)">
+    <mat-option value="description">Descrição</mat-option>
+    <mat-option value="createdAt">Último cadastrado</mat-option>
+    <mat-option value="year">Ano de publicação</mat-option>
+  </mat-select>
+</mat-form-field>
 
 <div class="list-container">
   <mat-accordion multi>

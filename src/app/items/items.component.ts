@@ -26,7 +26,6 @@ import { ItemsService } from '../services/items.service';
 export class ItemsComponent implements OnInit {
   loading = true;
   paginatedData!: PaginatedData<Item>;
-  sortQuery?: string;
   pagination?: Pagination;
   searchableFields: FilterFieldSearchableField[] = [
     { name: 'description', label: 'Descrição' },
@@ -36,6 +35,7 @@ export class ItemsComponent implements OnInit {
     { name: 'publishers', label: 'Editora' },
     { name: 'location', label: 'Local' },
   ];
+  sort: Sort = { active: this.searchableFields[0].name, direction: 'asc' };
   searchTerm?: string;
   searchColumn?: string;
 
@@ -67,9 +67,10 @@ export class ItemsComponent implements OnInit {
     const search = this.searchColumn
       ? { [this.searchColumn]: this.searchTerm }
       : undefined;
-    this.itmSrv
-      .fetch(this.pagination, search, this.sortQuery)
-      .subscribe(() => undefined);
+    const sort = `${this.sort.direction == 'desc' ? '-' : ''}${
+      this.sort.active
+    }`;
+    this.itmSrv.fetch(this.pagination, search, sort).subscribe(() => undefined);
   }
 
   changePage(pagination: Pagination) {
@@ -115,8 +116,8 @@ export class ItemsComponent implements OnInit {
       });
   }
 
-  sort(sort: Sort) {
-    this.sortQuery = `${sort.direction == 'desc' ? '-' : ''}${sort.active}`;
+  sortChange(active: string) {
+    this.sort.active = active;
     this.fetch();
   }
 }
