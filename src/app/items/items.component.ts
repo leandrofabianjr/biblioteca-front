@@ -35,7 +35,7 @@ export class ItemsComponent implements OnInit {
     { name: 'publishers', label: 'Editora' },
     { name: 'location', label: 'Local' },
   ];
-  sort: Sort = { active: this.searchableFields[0].name, direction: 'asc' };
+  sort = '-description';
   searchTerm?: string;
   searchColumn?: string;
 
@@ -62,15 +62,14 @@ export class ItemsComponent implements OnInit {
   }
 
   fetch() {
-    console.log(this.searchColumn, this.searchTerm);
+    console.log(this.searchColumn, this.searchTerm, this.sort);
     this.loading = true;
     const search = this.searchColumn
       ? { [this.searchColumn]: this.searchTerm }
       : undefined;
-    const sort = `${this.sort.direction == 'desc' ? '-' : ''}${
-      this.sort.active
-    }`;
-    this.itmSrv.fetch(this.pagination, search, sort).subscribe(() => undefined);
+    this.itmSrv
+      .fetch(this.pagination, search, this.sort)
+      .subscribe(() => undefined);
   }
 
   changePage(pagination: Pagination) {
@@ -116,8 +115,8 @@ export class ItemsComponent implements OnInit {
       });
   }
 
-  sortChange(active: string) {
-    this.sort.active = active;
+  sortChange(sort: string) {
+    this.sort = sort;
     this.fetch();
   }
 }

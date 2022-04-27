@@ -35,15 +35,15 @@ export abstract class RestService<
   }
 
   private getFecthParams(pagination: Pagination, search?: any, sort?: string) {
-    let params = {
+    let params: any = {
       limit: pagination.pageSize,
       offset: pagination.pageSize * pagination.page,
     };
     if (search && Object.keys(search).length) {
-      return { search: JSON.stringify(search), ...params };
+      params['search'] = JSON.stringify(search);
     }
     if (sort) {
-      return { sort: sort, ...params };
+      params['sort'] = sort;
     }
     return params;
   }
@@ -68,7 +68,6 @@ export abstract class RestService<
   ): Observable<T[]> {
     const url = ApiAccess.getUrl(this.endpoint).fetch();
     const headers = ApiAccess.getAuthHeaders();
-    console.log(search);
     const params = this.getFecthParams(pagination, search, sort);
     return this.http
       .get<PaginatedResponse<T_FETCH_DTO>>(url, { headers, params })
