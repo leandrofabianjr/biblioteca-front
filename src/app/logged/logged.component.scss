@@ -38,10 +38,18 @@
   z-index: 2;
   position: fixed;
   top: 0px;
-  transition: transform 0.25s linear;
+  transition: transform 0.5s linear;
   &.toolbar-hidden {
-    transform: translateY(-100%);
+    transform: translateY(-200%);
   }
+
+  &.sidenav-opened {
+    transform: translatex(-130%);
+  }
+}
+
+.sidenav-header {
+  padding: 8px;
 }
 
 .screen-container {
@@ -77,4 +85,11 @@ h1.app-name {
 
 .screen-toolbar .spacer {
   flex: 1 1 auto;
+}
+
+.avatar-button {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
 }

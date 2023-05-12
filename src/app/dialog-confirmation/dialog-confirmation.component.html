@@ -1,6 +1,8 @@
 <h1 mat-dialog-title>Atenção!</h1>
 <div mat-dialog-content>
-  <p>Deseja realmente remover?</p>
+  <p>
+    {{ data.text ??'Deseja realmente remover?' }}
+  </p>
 </div>
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]="true">Sim</button>

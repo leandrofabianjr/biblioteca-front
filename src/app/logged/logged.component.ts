@@ -1,5 +1,8 @@
 import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogConfirmationComponent } from 'app/dialog-confirmation/dialog-confirmation.component';
+import { MeService } from 'app/services/me.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -13,15 +16,29 @@ export class LoggedComponent implements OnInit, OnDestroy {
   hide = false;
   private mobileQueryListener: () => void;
   lastScrollTop = 0;
+  userPhoto!: string;
+  sidenavOpened = false;
+  userName = 'dd';
 
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher,
-    public auth: AuthService
+    public auth: AuthService,
+    private meService: MeService,
+    public dialog: MatDialog
   ) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this.mobileQueryListener);
+    this.userName = AuthService.currentUser.name!;
+  }
+
+  ngOnInit(): void {
+    this.loading = false;
+
+    this.meService
+      .getPhotoUrl()
+      .subscribe({ next: (photo) => (this.userPhoto = photo) });
   }
 
   onContentScroll(event: Event) {
@@ -39,15 +56,24 @@ export class LoggedComponent implements OnInit, OnDestroy {
     this.hide = !this.hide;
   }
 
-  ngOnInit(): void {
-    this.loading = false;
-  }
-
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this.mobileQueryListener);
   }
 
   logout() {
-    this.auth.logout();
+    this.dialog
+      .open(DialogConfirmationComponent, {
+        data: { text: 'Deseja realmente sair do sistema?' },
+      })
+      .afterClosed()
+      .subscribe((logout: boolean) => {
+        if (logout) {
+          this.auth.logout();
+        }
+      });
+  }
+
+  toggleSidenav() {
+    this.sidenavOpened = !this.sidenavOpened;
   }
 }

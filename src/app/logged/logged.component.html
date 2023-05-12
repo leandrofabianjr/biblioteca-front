@@ -4,25 +4,61 @@
 </div>
 
 <div *ngIf="!loading" class="screen-container" [class.is-mobile]="mobileQuery.matches">
-  <mat-toolbar class="screen-toolbar" [class.toolbar-hidden]="hide">
+
+  <!-- <mat-toolbar color="transparent" class="screen-toolbar" [class.toolbar-hidden]="hide">
     <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-    <h1 class="app-name" routerLink="me">Minha Biblioteca</h1>
     <span class="spacer"></span>
-    <button mat-icon-button aria-label="Sair" (click)="logout()" ><mat-icon>exit_to_app</mat-icon></button>
-  </mat-toolbar>
+    <button mat-fab color="primary" class="avatar-button" [style.backgroundImage]="'url(' + userPhoto + ')'">
+    </button>
+  </mat-toolbar> -->
+
+  <!-- <div class="screen-toolbar" [class.toolbar-hidden]="hide">
+
+    <span class="spacer"></span>
+    <button mat-fab color="primary" class="avatar-button" [style.backgroundImage]="'url(' + userPhoto + ')'">
+    </button>
+  </div> -->
 
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches">
+    <mat-sidenav [opened]="sidenavOpened" [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches">
+      <div fxLayoutAlign="space-between" class="sidenav-header">
+        <div>
+          <button mat-fab color="primary" class="avatar-button" [style.backgroundImage]="'url(' + userPhoto + ')'">
+          </button>
+        </div>
+        <button mat-icon-button (click)="toggleSidenav()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <mat-list>
+        <mat-list-item role="listitem" fxLayout="row" fxLayoutAlign="space-between center">
+          <span>
+            {{ userName }}
+          </span>
+          <button mat-icon-button (click)="toggleSidenav();logout()">
+            <mat-icon>logout</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+      <mat-divider></mat-divider>
       <mat-nav-list class="nav-list">
-        <a mat-list-item routerLink="items" (click)="snav.toggle()">Itens</a>
-        <a mat-list-item routerLink="genres" (click)="snav.toggle()">Gêneros</a>
-        <a mat-list-item routerLink="authors" (click)="snav.toggle()">Autores</a>
-        <a mat-list-item routerLink="publishers" (click)="snav.toggle()">Editoras</a>
-        <a mat-list-item routerLink="locations" (click)="snav.toggle()">Locais</a>
+        <a mat-list-item routerLink="items" (click)="toggleSidenav()">Itens</a>
+        <a mat-list-item routerLink="genres" (click)="toggleSidenav()">Gêneros</a>
+        <a mat-list-item routerLink="authors" (click)="toggleSidenav()">Autores</a>
+        <a mat-list-item routerLink="publishers" (click)="toggleSidenav()">Editoras</a>
+        <a mat-list-item routerLink="locations" (click)="toggleSidenav()">Locais</a>
       </mat-nav-list>
     </mat-sidenav>
 
     <mat-sidenav-content (scroll)="onContentScroll($event)">
+      <div class="screen-toolbar" [class.toolbar-hidden]="hide" [class.sidenav-opened]="sidenavOpened">
+        <div *ngIf="!sidenavOpened" class="menu-button">
+          <button mat-fab extended color="white" (click)="toggleSidenav()">
+            <mat-icon>menu</mat-icon>
+            Minha Biblioteca
+          </button>
+        </div>
+      </div>
       <div class="container">
         <router-outlet></router-outlet>
       </div>

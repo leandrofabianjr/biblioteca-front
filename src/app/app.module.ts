@@ -56,6 +56,7 @@ import { UserComponent } from './user/user.component';
 import { FilterFieldComponent } from './filter-field/filter-field.component';
 import { FilterFieldInputComponent } from './filter-field/filter-field-input/filter-field-input.component';
 import { ItemExpansionPanelComponent } from './items/item-expansion-panel/item-expansion-panel.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import { ItemExpansionPanelComponent } from './items/item-expansion-panel/item-e
     FilterFieldComponent,
     FilterFieldInputComponent,
     ItemExpansionPanelComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
