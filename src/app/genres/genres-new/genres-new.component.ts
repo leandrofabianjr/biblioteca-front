@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GenresService } from '../../services/genres.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Genre } from '../../models/genre';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { AlertService } from 'app/services/alert.service';
 
 @Component({
