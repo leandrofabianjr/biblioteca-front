@@ -4,7 +4,7 @@
 </div>
 
 <div *ngIf="!loading" class="screen-container" [class.is-mobile]="mobileQuery.matches">
-  <mat-toolbar color="primary" class="screen-toolbar">
+  <mat-toolbar class="screen-toolbar" [class.toolbar-hidden]="hide">
     <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
     <h1 class="app-name" routerLink="me">Minha Biblioteca</h1>
     <span class="spacer"></span>
@@ -22,7 +22,7 @@
       </mat-nav-list>
     </mat-sidenav>
 
-    <mat-sidenav-content>
+    <mat-sidenav-content (scroll)="onContentScroll($event)">
       <div class="container">
         <router-outlet></router-outlet>
       </div>

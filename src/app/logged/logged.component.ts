@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -10,7 +10,9 @@ import { AuthService } from '../services/auth.service';
 export class LoggedComponent implements OnInit, OnDestroy {
   mobileQuery: MediaQueryList;
   loading = true;
+  hide = false;
   private mobileQueryListener: () => void;
+  lastScrollTop = 0;
 
   constructor(
     changeDetectorRef: ChangeDetectorRef,
@@ -20,6 +22,21 @@ export class LoggedComponent implements OnInit, OnDestroy {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this.mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this.mobileQueryListener);
+  }
+
+  onContentScroll(event: Event) {
+    const target = event.target as HTMLElement;
+    var st = target.scrollTop;
+    if (st > this.lastScrollTop) {
+      this.hide = true;
+    } else if (st < this.lastScrollTop) {
+      this.hide = false;
+    }
+    this.lastScrollTop = st <= 0 ? 0 : st;
+  }
+
+  show() {
+    this.hide = !this.hide;
   }
 
   ngOnInit(): void {
