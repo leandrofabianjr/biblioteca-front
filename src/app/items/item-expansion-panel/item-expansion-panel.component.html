@@ -2,26 +2,26 @@
   <mat-expansion-panel-header>
     <mat-panel-title>{{ item.description }} ({{ item.year }})</mat-panel-title>
   </mat-expansion-panel-header>
-  <div fxLayout="column">
-    <span fxLayout="row wrap" fxLayoutAlign="start center">
+  <div class="panel-content">
+    <span class="panel-content-item">
       <mat-icon matTooltip="Autor(es)" matTooltipPosition="above">people</mat-icon>
       <button mat-button *ngFor="let author of item.authors" (click)="search('authors', author.name)">
         {{ author.name }}
       </button>
     </span>
-    <span fxLayout="row wrap" fxLayoutAlign="start center">
+    <span class="panel-content-item">
       <mat-icon matTooltip="Gênero(s)" matTooltipPosition="above">class</mat-icon>
       <button mat-button *ngFor="let genre of item.genres" (click)="search('genres', genre.description)">
         {{ genre.description }}
       </button>
     </span>
-    <span fxLayout="row wrap" fxLayoutAlign="start center">
+    <span class="panel-content-item">
       <mat-icon matTooltip="Editora(s)" matTooltipPosition="above">local_library</mat-icon>
       <button mat-button *ngFor="let publisher of item.publishers" (click)="search('publishers', publisher.name)">
         {{ publisher.name }}
       </button>
     </span>
-    <span fxLayout="row wrap" fxLayoutAlign="start center">
+    <span class="panel-content-item">
       <span matBadge="4" matBadgeOverlap="false">
         <mat-icon matTooltip="Local" matTooltipPosition="above">place</mat-icon>
       </span>
@@ -29,7 +29,7 @@
         {{ item.location.description }}
       </button>
     </span>
-    <div fxFlex="row" fxFlexAlign="end">
+    <div class="panel-content-actions">
       <button mat-button color="primary" [routerLink]="[item.uuid]">
         Editar
       </button>

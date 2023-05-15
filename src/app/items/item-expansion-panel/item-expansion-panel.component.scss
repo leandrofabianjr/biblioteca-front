@@ -1,0 +1,17 @@
+.panel-content {
+  display: flex;
+  flex-direction: column;
+
+  .panel-content-item {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: center;
+  }
+
+  .panel-content-actions {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+  }
+}

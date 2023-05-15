@@ -1,11 +1,8 @@
 <!--<ng-adsense></ng-adsense>-->
 
-<div fxLayout="row" fxLayoutAlign="space-between">
-  <h2>Itens</h2>
-</div>
+<h2>Itens</h2>
 
-<app-filter-field [searchableFields]="searchableFields" [selectedField]="searchColumn" [term]="searchTerm"
-  (searchChange)="search($event)"></app-filter-field>
+<app-filter-field [searchableFields]="searchableFields" [selectedField]="searchColumn" [term]="searchTerm" (searchChange)="search($event)"></app-filter-field>
 
 <mat-form-field appearance="outline">
   <mat-icon matPrefix>sort</mat-icon>
