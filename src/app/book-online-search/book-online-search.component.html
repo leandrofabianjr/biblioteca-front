@@ -20,9 +20,9 @@
     <mat-card-content
       class="item-content single-line-content"
     >
-      <mat-chip-list>
+      <mat-chip-set>
         <mat-chip *ngFor="let author of book?.volumeInfo?.authors" selectable="false">{{ author }}</mat-chip>
-      </mat-chip-list>
+      </mat-chip-set>
       <p [title]="'Publicado em ' + book?.volumeInfo?.publishedDate"
          class="item-published">{{book?.volumeInfo?.publishedDate}}</p>
       <p [title]="book?.volumeInfo?.description" class="item-description">{{book?.volumeInfo?.description}}</p>
