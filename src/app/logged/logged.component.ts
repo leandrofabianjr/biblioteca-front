@@ -16,7 +16,7 @@ export class LoggedComponent implements OnInit, OnDestroy {
   hide = false;
   private mobileQueryListener: () => void;
   lastScrollTop = 0;
-  userPhoto!: string;
+  userPhoto?: string;
   sidenavOpened = false;
   userName = 'dd';
 

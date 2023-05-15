@@ -21,9 +21,9 @@
 
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav [opened]="sidenavOpened" [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches">
-      <div fxLayoutAlign="space-between" class="sidenav-header">
+      <div class="sidenav-header">
         <div>
-          <button mat-fab color="primary" class="avatar-button" [style.backgroundImage]="'url(' + userPhoto + ')'">
+          <button mat-fab color="primary" class="avatar-button" [style.backgroundImage]="'url(' + (userPhoto ?? '/assets/icon.png') + ')'">
           </button>
         </div>
         <button mat-icon-button (click)="toggleSidenav()">
@@ -31,13 +31,15 @@
         </button>
       </div>
       <mat-list>
-        <mat-list-item role="listitem" fxLayout="row" fxLayoutAlign="space-between center">
-          <span>
-            {{ userName }}
-          </span>
-          <button mat-icon-button (click)="toggleSidenav();logout()">
-            <mat-icon>logout</mat-icon>
-          </button>
+        <mat-list-item role="listitem">
+          <div class="username-row">
+            <span>
+              {{ userName }}
+            </span>
+            <button mat-icon-button (click)="toggleSidenav();logout()">
+              <mat-icon>logout</mat-icon>
+            </button>
+          </div>
         </mat-list-item>
       </mat-list>
       <mat-divider></mat-divider>
