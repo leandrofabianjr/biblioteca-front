@@ -23,8 +23,8 @@
     <mat-sidenav [opened]="sidenavOpened" [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches">
       <div class="sidenav-header">
         <div>
-          <button mat-fab color="primary" class="avatar-button" [style.backgroundImage]="'url(' + (userPhoto ?? '/assets/icon.png') + ')'">
-          </button>
+          <a mat-fab color="primary" class="avatar-button" routerLink="me" (click)="toggleSidenav()" [style.backgroundImage]="'url(' + (userPhoto ?? '/assets/icon.png') + ')'">
+          </a>
         </div>
         <button mat-icon-button (click)="toggleSidenav()">
           <mat-icon>close</mat-icon>
@@ -33,9 +33,9 @@
       <mat-list>
         <mat-list-item role="listitem">
           <div class="username-row">
-            <span>
+            <a mat-button routerLink="me" (click)="toggleSidenav()">
               {{ userName }}
-            </span>
+            </a>
             <button mat-icon-button (click)="toggleSidenav();logout()">
               <mat-icon>logout</mat-icon>
             </button>
