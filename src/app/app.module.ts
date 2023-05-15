@@ -1,7 +1,6 @@
 import { A11yModule } from '@angular/cdk/a11y';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,9 +36,13 @@ import { BookOnlineSearchComponent } from './book-online-search/book-online-sear
 import { DialogConfirmationComponent } from './dialog-confirmation/dialog-confirmation.component';
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 import { RealTimeSearchDirective } from './directives/real-time-search.directive';
+import { FilterFieldInputComponent } from './filter-field/filter-field-input/filter-field-input.component';
+import { FilterFieldComponent } from './filter-field/filter-field.component';
 import { GenresNewComponent } from './genres/genres-new/genres-new.component';
 import { GenresComponent } from './genres/genres.component';
+import { HomeComponent } from './home/home.component';
 import { InfoErroCampoComponent } from './info-erro-campo/info-erro-campo.component';
+import { ItemExpansionPanelComponent } from './items/item-expansion-panel/item-expansion-panel.component';
 import { ItemsNewComponent } from './items/items-new/items-new.component';
 import { ItemsComponent } from './items/items.component';
 import { LocationsNewComponent } from './locations/locations-new/locations-new.component';
@@ -53,80 +56,75 @@ import { PublishersNewComponent } from './publishers/publishers-new/publishers-n
 import { PublishersComponent } from './publishers/publishers.component';
 import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.component';
 import { UserComponent } from './user/user.component';
-import { FilterFieldComponent } from './filter-field/filter-field.component';
-import { FilterFieldInputComponent } from './filter-field/filter-field-input/filter-field-input.component';
-import { ItemExpansionPanelComponent } from './items/item-expansion-panel/item-expansion-panel.component';
-import { HomeComponent } from './home/home.component';
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        LoginComponent,
-        UserComponent,
-        LogoutComponent,
-        AuthorsComponent,
-        GenresComponent,
-        LocationsComponent,
-        PublishersComponent,
-        ItemsComponent,
-        ItemsNewComponent,
-        InfoErroCampoComponent,
-        RealTimeSearchDirective,
-        AuthorsNewComponent,
-        GenresNewComponent,
-        LocationsNewComponent,
-        PublishersNewComponent,
-        DialogConfirmationComponent,
-        TabColumnSearchComponent,
-        LoggedComponent,
-        DialogInfoComponent,
-        BookOnlineSearchComponent,
-        PaginatorComponent,
-        FilterFieldComponent,
-        FilterFieldInputComponent,
-        ItemExpansionPanelComponent,
-        HomeComponent,
-    ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatSidenavModule,
-        MatListModule,
-        MatButtonModule,
-        MatCardModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatChipsModule,
-        MatProgressSpinnerModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDialogModule,
-        MatSelectModule,
-        MatSortModule,
-        MatSnackBarModule,
-        MatAutocompleteModule,
-        MatTooltipModule,
-        MatExpansionModule,
-        ReactiveFormsModule,
-        NgSelectModule,
-        A11yModule,
-        HttpClientModule,
-        // AdsenseModule.forRoot({
-        //   adClient: 'ca-pub-3580088567894548',
-        //   adSlot: 7259870550,
-        // }),
-        FormsModule,
-        FlexLayoutModule,
-    ],
-    providers: [
-        {
-            provide: MatPaginatorIntl,
-            useClass: MatPaginatorIntlPtbr,
-        },
-    ],
-    bootstrap: [AppComponent]
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    UserComponent,
+    LogoutComponent,
+    AuthorsComponent,
+    GenresComponent,
+    LocationsComponent,
+    PublishersComponent,
+    ItemsComponent,
+    ItemsNewComponent,
+    InfoErroCampoComponent,
+    RealTimeSearchDirective,
+    AuthorsNewComponent,
+    GenresNewComponent,
+    LocationsNewComponent,
+    PublishersNewComponent,
+    DialogConfirmationComponent,
+    TabColumnSearchComponent,
+    LoggedComponent,
+    DialogInfoComponent,
+    BookOnlineSearchComponent,
+    PaginatorComponent,
+    FilterFieldComponent,
+    FilterFieldInputComponent,
+    ItemExpansionPanelComponent,
+    HomeComponent,
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule,
+    MatButtonModule,
+    MatCardModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatChipsModule,
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatSortModule,
+    MatSnackBarModule,
+    MatAutocompleteModule,
+    MatTooltipModule,
+    MatExpansionModule,
+    ReactiveFormsModule,
+    NgSelectModule,
+    A11yModule,
+    HttpClientModule,
+    // AdsenseModule.forRoot({
+    //   adClient: 'ca-pub-3580088567894548',
+    //   adSlot: 7259870550,
+    // }),
+    FormsModule,
+  ],
+  providers: [
+    {
+      provide: MatPaginatorIntl,
+      useClass: MatPaginatorIntlPtbr,
+    },
+  ],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
