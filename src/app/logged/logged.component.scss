@@ -21,16 +21,25 @@
   .container {
     margin-top: 100px;
     width: 750px;
+    &.sidenav-opened {
+      width: 510px;
+    }
   }
 }
 @media (min-width: 992px) {
   .container {
     width: 970px;
+    &.sidenav-opened {
+      width: 730px;
+    }
   }
 }
 @media (min-width: 1200px) {
   .container {
     width: 1170px;
+    &.sidenav-opened {
+      width: 930px;
+    }
   }
 }
 

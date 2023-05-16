@@ -18,7 +18,8 @@ export class LoggedComponent implements OnInit, OnDestroy {
   lastScrollTop = 0;
   userPhoto?: string;
   sidenavOpened = false;
-  userName = 'dd';
+  sidenavAlwaysOpened = false;
+  userName = '';
 
   constructor(
     changeDetectorRef: ChangeDetectorRef,
@@ -31,6 +32,10 @@ export class LoggedComponent implements OnInit, OnDestroy {
     this.mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this.mobileQueryListener);
     this.userName = AuthService.currentUser.name!;
+    this.sidenavAlwaysOpened = window.innerWidth >= 1000;
+    window.onresize = () => {
+      this.sidenavAlwaysOpened = window.innerWidth >= 1000;
+    };
   }
 
   ngOnInit(): void {
@@ -74,6 +79,8 @@ export class LoggedComponent implements OnInit, OnDestroy {
   }
 
   toggleSidenav() {
+    if (this.sidenavAlwaysOpened) return;
+
     this.sidenavOpened = !this.sidenavOpened;
   }
 }
