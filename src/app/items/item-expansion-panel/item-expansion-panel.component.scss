@@ -5,13 +5,13 @@
   .panel-content-item {
     display: flex;
     flex-wrap: wrap;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
   }
 
   .panel-content-actions {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     align-items: center;
   }
 }
